@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:password_storage/item.dart';
+import 'package:password_storage/setting.dart';
+import 'package:provider/provider.dart';
 
 class Root extends StatefulWidget {
 
@@ -42,18 +45,9 @@ class _RootState extends State<Root> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery
-        .of(context)
-        .size
-        .height;
-    final width = MediaQuery
-        .of(context)
-        .size
-        .width;
-    final adjustsizeh = MediaQuery
-        .of(context)
-        .size
-        .height * 0.0011;
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    final adjustsizeh = MediaQuery.of(context).size.height * 0.0011;
     bool on = true;
 
     Widget ListElement(String title, String mail, String password,
@@ -150,8 +144,13 @@ class _RootState extends State<Root> {
         Elements.add(ListElement(titleList[i], mailList[i], passwordList[i], textList[i]));
       }
     }else{}
+    //final itemList;
 
-    return Scaffold(
+    return
+      //ChangeNotifierProvider(
+        //create: (_)=>itemList,
+        //child:
+        Scaffold(
       backgroundColor: Colors.cyan[100],
       appBar: AppBar(
         elevation: 8,
@@ -166,26 +165,55 @@ class _RootState extends State<Root> {
           Padding(
             padding: const EdgeInsets.all(4.0),
             child: IconButton(
-              icon: Icon(Icons.search),
+              icon: Icon(Icons.shuffle),
               onPressed: () => {
+              Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =>Item()),
+              )
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: IconButton(
+              icon: Icon(Icons.settings),
+              onPressed: () => {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>Setting()),
+                )
                 },
             ),
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(child:Icon(Icons.add) ,onPressed: (){},),
       body: Center(
             child:Container(
               decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("lib/wooden1.jpg"),
-                  fit: BoxFit.cover,
-                ),
+                color: Colors.amber[200]
               ),
-             child: (Elements.length!=0) ?ListView(
+             child:Column(children:<Widget>[
+               Container(
+                   height: height*0.8,
+                   child:TextField(
+                 style: TextStyle(color: Colors.yellow[100]),
+                 decoration: InputDecoration(
+                   prefixIcon: Icon(Icons.search, color: Colors.white),
+                   hintText: 'タイトルを検索',
+                   hintStyle: const TextStyle(color: Colors.white),
+                 ),
+                // onChanged: (value) => itemList.search(value),
+                  )),
+               (Elements.length!=0) ?Container(
+                   height: height*0.7,
+                   child:ListView(
               children: Elements,
-            ) :Container(),
-           ),
+            )) :Container(),
+           ])),
           ),
+    //)
     );
   }
 }
