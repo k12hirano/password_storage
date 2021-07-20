@@ -26,7 +26,7 @@ class _SettingState extends State<Setting> {
     final adjustsizeh = MediaQuery.of(context).size.height * 0.0011;
     return Scaffold(
       backgroundColor: Colors.amber[100],
-      appBar: AppBar(title: Text('Setting'),
+      appBar: AppBar(title: Text('SETTING'),
         centerTitle: true,
         backgroundColor: Colors.brown[800],
         actions: [
@@ -77,7 +77,7 @@ class _SettingState extends State<Setting> {
                 ),
               )),
               child:ListTile(
-                title: Text('Emphasize Password with Color',style: TextStyle(fontSize: fontsize, color: fontcolor)),
+                title: Row(children: <Widget>[Icon(Icons.star),Text('Emphasize Password',style: TextStyle(fontSize: fontsize, color: fontcolor))],),
                 trailing: CupertinoSwitch(
                   activeColor: Colors.lime.shade800,
                   value: PWcolor,
@@ -99,7 +99,7 @@ class _SettingState extends State<Setting> {
                 ),
               )),
               child:ListTile(
-                title: Text('Display on Status Bar',style: TextStyle(fontSize: fontsize, color: fontcolor)),
+                title: Row(children: <Widget>[Icon(Icons.notifications_none),Text('Display on Status Bar',style: TextStyle(fontSize: fontsize, color: fontcolor))],),
                 trailing: CupertinoSwitch(
                   activeColor: Colors.lime.shade800,
                   value: statusbar,
@@ -121,8 +121,9 @@ class _SettingState extends State<Setting> {
             )),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-            Text('Display Item',style: TextStyle(fontSize: fontsize, color: fontcolor),),
+            Row(mainAxisAlignment:MainAxisAlignment.center,children: <Widget>[Icon(Icons.list),Text('Display Item',style: TextStyle(fontSize: fontsize, color: fontcolor),),]),
             Container(
                 height: height*0.06,
                 width: width*0.99,
