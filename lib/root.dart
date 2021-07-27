@@ -14,12 +14,7 @@ class Root extends StatefulWidget {
 
 class _RootState extends State<Root> {
 
-  List<String> titleList=['google','yahoo'];
-  List<String> mailList=['sample@example.com','sample@example.com'];
-  List<String> passwordList=['lolooollol','eoeoeoeoeoe'];
-  List<int> passlengthList=[8,11];
-  List<String> urlList=['https://api.flutter.dev/flutter/material/Icons-class.html','https://api.flutter.dev/flutter/material/Icons-class.html'];
-  List<String> textList=['ここに必要事項を記入','サブアカウント'];
+  
   List<String> consealpassList=[];
   bool consealjudge=true;
   final fontsize = 16;
@@ -158,14 +153,13 @@ class _RootState extends State<Root> {
                    hintText: 'タイトルを検索',
                    hintStyle: TextStyle(color: Colors.brown[700]),
                  ),
-                 onChanged:(value) {print(value);_ItemBuilderState().set(value);}
+                 onChanged://(value) {print(value);_ItemBuilderState().set(value);}
                      //(value){ _ItemBuilderState().searching(value);}
-                     //(value){ ooo.search(value);},
+                     (value){ ooo.search(value);},
                   )),
                 Expanded(
                    //height: height*0.7,
-                   child:(searchtext.text.length == 0) ?ItemBuild(ItemkunRepository(DBProvider.instance))
-                       :ItemBuilder(ItemkunRepository(DBProvider.instance))
+                   child:ItemBuild()
                 ),
            ]))
                 :Container(child:CircularProgressIndicator())
@@ -175,7 +169,7 @@ class _RootState extends State<Root> {
   }
 }
 
-class Items extends ChangeNotifier{
+class Items with ChangeNotifier{
   final ItemkunRepository _itemkunRepositoryitems;
   List<Itemkun> _items = [];
   List<Itemkun> get items => _items;
@@ -183,13 +177,13 @@ class Items extends ChangeNotifier{
   bool get isLoading => _isLoading;
   final databaseflg = false;
 
+
   void load() async {
-   // loadA();
-     // print('loadItems');
-    //_items = await _itemkunRepositoryitems.loadItems();
-   // print(_items.length);
-   // print(_items);
-    //loadB();
+    loadA();
+      print('loadItems');
+    _items = await _itemkunRepositoryitems.loadItems();
+    print(items.length);
+    loadB();
 
   }
 
@@ -197,6 +191,7 @@ class Items extends ChangeNotifier{
     loadA();
     _items = await _itemkunRepositoryitems.search(element);
     print('検索');
+    print(_items);
     loadB();
   }
   void loadA() {
@@ -216,9 +211,9 @@ class Items extends ChangeNotifier{
 }
 
 class ItemBuild extends StatefulWidget {
-  final ItemkunRepository _itemkunRepository;
+ // final ItemkunRepository _itemkunRepository;
 
-  ItemBuild(this._itemkunRepository);
+  //ItemBuild(this._itemkunRepository);
 
   @override
   _ItemBuildState createState() => _ItemBuildState();
@@ -253,7 +248,7 @@ class _ItemBuildState extends State<ItemBuild> {
       return ListView.builder(
           itemCount: whats.length,
           itemBuilder: (BuildContext context, int index){
-            //var item = itemlist.items[index];
+            var item = itemlist.items[index];
             return InkWell(
               onTap: () {
                 Navigator.push(
@@ -261,7 +256,8 @@ class _ItemBuildState extends State<ItemBuild> {
                   MaterialPageRoute(builder: (context) =>Item(
                       1,
                       //itemlist.items[index].id,
-                      widget._itemkunRepository
+                     null
+                      //widget._itemkunRepository
                   )),
                 );
               },
@@ -383,13 +379,14 @@ class _ItemBuildState extends State<ItemBuild> {
             );
           });}
 
-    Widget createListView1(BuildContext context, AsyncSnapshot snapshot){
+   // Widget createListView1(BuildContext context, AsyncSnapshot snapshot){
       //final Items itemlist = Provider.of<Items>(context);
-      final List<Itemkun> whats = snapshot.data;
+     // final List<Itemkun> whats = snapshot.data;
       return ListView.builder(
-          itemCount: whats.length,
+          itemCount: itemlist.items.length,
           itemBuilder: (BuildContext context, int index){
-            //var item = itemlist.items[index];
+            var item = itemlist.items[index];
+            
             return InkWell(
               onTap: () {
                 Navigator.push(
@@ -397,7 +394,8 @@ class _ItemBuildState extends State<ItemBuild> {
                   MaterialPageRoute(builder: (context) =>Item(
                       1,
                       //itemlist.items[index].id,
-                      widget._itemkunRepository
+                      null
+                      //widget._itemkunRepository
                   )),
                 );
               },
@@ -422,10 +420,10 @@ class _ItemBuildState extends State<ItemBuild> {
                                         )
                                     )),
                                     height: height*0.03,
-                                    child:Row(children:<Widget>[SizedBox(width: width*0.05,),Text(whats[index].title,style: TextStyle(fontSize: fontsize*adjustsizeh*1.1, color: fontcolor),)])),
+                                    child:Row(children:<Widget>[SizedBox(width: width*0.05,),Text(item.title,style: TextStyle(fontSize: fontsize*adjustsizeh*1.1, color: fontcolor),)])),
                                 Container(
                                     height: height*0.025,
-                                    child: Row(children:<Widget>[Text('Email:'+whats[index].email, style: TextStyle(fontSize:fontsize*adjustsizeh, color: Colors.black54),),
+                                    child: Row(children:<Widget>[Text('Email:'+item.email, style: TextStyle(fontSize:fontsize*adjustsizeh, color: Colors.black54),),
                                       IconButton(icon: Icon(Icons.copy,size: iconsize*adjustsizeh,), onPressed:(){})])),
                                 Container(
                                   height: height*0.025,
@@ -445,7 +443,7 @@ class _ItemBuildState extends State<ItemBuild> {
                                       //(consealjudge == true) ?
                                       Container(
                                         child:Text(
-                                          whats[index].pass,
+                                          item.pass,
                                           style: TextStyle(
                                               fontSize: 16*adjustsizeh,
                                               fontWeight: FontWeight.bold,
@@ -463,7 +461,7 @@ class _ItemBuildState extends State<ItemBuild> {
                                     height: height*0.02,
                                     width: width*0.65,
                                     child:Row(children: <Widget>[Flexible(
-                                      child:Text(whats[index].url,
+                                      child:Text(item.url,
                                         style: TextStyle(
                                           fontSize: 16*adjustsizeh,
                                           color: Colors.brown[800],
@@ -486,7 +484,7 @@ class _ItemBuildState extends State<ItemBuild> {
                                         //  width: width*0.05,
                                         //),
                                         Flexible(
-                                          child:Text(whats[index].memo,
+                                          child:Text(item.memo,
                                             style: TextStyle(
                                               fontSize: 16*adjustsizeh,
                                               color: Colors.brown[800],
@@ -524,45 +522,45 @@ class _ItemBuildState extends State<ItemBuild> {
     //if(itemlist.items.isEmpty){
      // return Container();
     //}
-     futuremethod(String element) {
-      if(element.length == 0 || element == null){
-        print('sakusenA');
-        widget._itemkunRepository.loadItems();}
-      else{
-        print('sakusenB');
-        widget._itemkunRepository.search(element);
-      }
+   //  futuremethod(String element) {
+     // if(element.length == 0 || element == null){
+       // print('sakusenA');
+        //widget._itemkunRepository.loadItems();}
+      //else{
+       // print('sakusenB');
+        //widget._itemkunRepository.search(element);
+      //}
 
     }
 
-    return
+   // return
       //Container(
       //height: height*0.65,
       //child:
       //(_RootState().searchtext.text.length==0)?
-      FutureBuilder(
-      future:widget._itemkunRepository.loadItems(),
-      //widget._itemkunRepository.loadItems(),
-      builder:(BuildContext context, AsyncSnapshot snapshot) {
+     // FutureBuilder(
+      //future:widget._itemkunRepository.loadItems(),
+        //widget._itemkunRepository.loadItems(),
+      //builder:(BuildContext context, AsyncSnapshot snapshot) {
 
    // if (snapshot.connectionState != ConnectionState.done) {
      // print('今ロード中やねん');
     //return CircularProgressIndicator();
     //}
-    if (snapshot.hasError) {
-    return Text(snapshot.error.toString());
-    }
-    if (snapshot.hasData) {
-      print('データゲットall');
-      print(_RootState().searchtext==null);
-      print(_RootState().searchtext.text.length);
-      print(_RootState().searchtext.text);
-    return createListView(context, snapshot);
-    } else {
-    return Container();}});
+//    if (snapshot.hasError) {
+  //  return Text(snapshot.error.toString());
+    //}
+    //if (snapshot.hasData) {
+      //print('データゲットall');
+      //print(_RootState().searchtext==null);
+      //print(_RootState().searchtext.text.length);
+      //print(_RootState().searchtext.text);
+  //  return createListView(context, snapshot);
+    //} else {
+    //return Container();}});
     //);
-  }
-}
+  //}
+//}
 
 class ItemBuilder extends StatefulWidget {
   final ItemkunRepository _itemkunRepository;
@@ -762,4 +760,18 @@ class _ItemBuilderState extends State<ItemBuilder> {
             return Container();}});
   }
   }
+
+//class ListViewElement extends StatefulWidget {
+  //@override
+  //_ListViewElementState createState() => _ListViewElementState();
+//}
+//class _ListViewElementState extends State<ListViewElement> {
+  //@override
+  //Widget build(BuildContext context) {
+   // return
+  //}
+
+//}
+
+
 
