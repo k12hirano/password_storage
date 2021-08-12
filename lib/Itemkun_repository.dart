@@ -8,7 +8,7 @@ class ItemkunRepository{
 
 
   String table = 'ItemList';
-  DBProvider instance = DBProvider.instance;
+  //DBProvider instance = DBProvider.instance;
 
   Future<Itemkun> create(String title, String email, String pass, String url,
       String memo) async{
@@ -21,8 +21,11 @@ class ItemkunRepository{
       'memo' :memo,
       'date' :now.toString()
     };
-    final db = await instance.database;
-    final id = await db.insert(table, row);
+    final Itemkun _itemkun = Itemkun(id:null, title: title, email: email, pass: pass, url: url, memo: memo,date: now.toString());
+    //final db = await instance.database;
+    final db = await itemdatabase;
+    //final id = await db.insert(table, row);
+    final id = await db.tukkomu(_itemkun);
 
     return Itemkun(
         id: row['id'],
@@ -34,12 +37,12 @@ class ItemkunRepository{
         date: now.toString(),);
   }
 
-  Future<List<Itemkun>> loadItems() => DBProvider.instance.getItems();
-  Future<List<Itemkun>> search(String element) => DBProvider.instance.search(element);
-  Future<List<Itemkun>> get(int id) => DBProvider.instance.select(id);
-  static Future tukkomu(Itemkun item) =>
+  Future<List<Itemkun>> loadItems() => itemdatabase.getItems();
+  Future<List<Itemkun>> search(String element) => itemdatabase.search(element);
+  Future<List<Itemkun>> get(int id) => itemdatabase.select(id);
+  Future tukkomu(Itemkun item) =>
       //print('repository');
-      DBProvider.instance.tukkomu(item);
-  Future update(Itemkun item, int id) => DBProvider.instance.update(item, id);
-  Future delete(int id) => DBProvider.instance.delete(id);
+      itemdatabase.tukkomu(item);
+  Future update(Itemkun item, int id) => itemdatabase.update(item, id);
+  Future delete(int id) => itemdatabase.delete(id);
 }

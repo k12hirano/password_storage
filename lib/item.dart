@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:password_storage/Itemkun.dart';
 import 'package:password_storage/Itemkun_repository.dart';
+import 'package:password_storage/db.dart';
 import 'package:password_storage/root.dart';
 
 
@@ -8,10 +9,11 @@ import 'package:password_storage/root.dart';
 class Item extends StatefulWidget {
   final argumentmode;
   //final id;
-  final _itemkunReository;
+  //final _itemkunReository;
   Item(this.argumentmode,
       //this.id,
-  this._itemkunReository);
+  //this._itemkunReository
+      );
 
   @override
   _ItemState createState() => _ItemState();
@@ -69,7 +71,7 @@ class _ItemState extends State<Item> {
     print(urltext.text);
     print(memotext.text);
     print('goal');
-    return await  ItemkunRepository.tukkomu(Itemkun(title: titletext.text,email:emailtext.text ,pass:passtext.text ,url:urltext.text ,memo:memotext.text,date: DateTime.now().toString() ));
+    return await  ItemkunRepository(DBProvider()).tukkomu(Itemkun(title: titletext.text,email:emailtext.text ,pass:passtext.text ,url:urltext.text ,memo:memotext.text,date: DateTime.now().toString() ));
 
     //titletext0.clear();
     //emailtext0.clear();

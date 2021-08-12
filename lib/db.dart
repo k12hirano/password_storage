@@ -10,8 +10,8 @@ import 'package:path_provider/path_provider.dart';
 class DBProvider {
   final databaseName = 'PassStorage.db';
   final databaseVersion = 1;
-  DBProvider._();
-  static final DBProvider instance = DBProvider._();
+  //DBProvider._();
+  //static final DBProvider instance = DBProvider._();
 
   final String itemtable = 'item';
   final String _id = 'id';
@@ -58,7 +58,7 @@ class DBProvider {
   }
 
 
-  Future<List<Itemkun>> getItems() async {
+   Future<List<Itemkun>> getItems() async {
     final db = await database;
     if (database1 == null){
     database1 = await initdb();
@@ -85,7 +85,8 @@ class DBProvider {
   Future<List<Itemkun>> search(String keyword) async {
     final db = await database;
     print('までは来とる');
-    var maps = await db.query(
+
+    var maps = (keyword != null) ?await db.query(
       itemtable,
       orderBy: '$_id DESC',
       where: '$_title LIKE ?'
@@ -94,14 +95,19 @@ class DBProvider {
       +'OR $_url LIKE ?'
       +'OR $_memo LIKE ?',
       whereArgs: ['%$keyword%','%$keyword%','%$keyword%','%$keyword%','%$keyword%'],
+    )
+    :await db.query(
+      itemtable,
+      orderBy: '$_id DESC',
     );
 
     if (maps.isEmpty) {print(maps);
     return [];
-    }else {print(maps);
+    }else {print(maps);print('db.search');
       return maps.map((map) => fromMap(map)).toList();
     }
   }
+
 
   Future tukkomu(Itemkun item) async {
     print('db.dart');
