@@ -8,10 +8,10 @@ import 'package:password_storage/root.dart';
 
 class Item extends StatefulWidget {
   final argumentmode;
-  //final id;
+  final id;
   //final _itemkunReository;
   Item(this.argumentmode,
-      //this.id,
+      this.id,
   //this._itemkunReository
       );
 
@@ -39,7 +39,7 @@ class _ItemState extends State<Item> {
   @override
   void initState() {
     isSelected = [true, false];
-    //if(widget.argumentmode == 1){getdata(widget.id);}else{}
+    if(widget.argumentmode == 1){getdata(widget.id);}else{}
     super.initState();
   }
 
@@ -55,12 +55,16 @@ class _ItemState extends State<Item> {
   }
 
   void getdata(int id) async{
-    //forEdit = await widget._itemkunReository.get(id);
-    //titletext0 = TextEditingController(text:forEdit[0].title);
-    //emailtext0 = TextEditingController(text:forEdit[0].email);
-    //passtext0 = TextEditingController(text:forEdit[0].pass);
-    //urltext0 = TextEditingController(text:forEdit[0].url);
-    //memotext0 = TextEditingController(text:forEdit[0].memo);
+   var forEdit = await DBProvider().select(id);
+    titletext0 = TextEditingController(text:forEdit[0].title);
+    emailtext0 = TextEditingController(text:forEdit[0].email);
+    passtext0 = TextEditingController(text:forEdit[0].pass);
+    urltext0 = TextEditingController(text:forEdit[0].url);
+    memotext0 = TextEditingController(text:forEdit[0].memo);
+    print('getdataした');
+    print(id);
+    print(titletext0);
+    print(forEdit[0].title);
   }
 
   void insertdesu() async {
@@ -123,11 +127,14 @@ class _ItemState extends State<Item> {
             ),
           ],
         ),
-        body: Center(child:Column(children: <Widget>[Container(),
-
-             Expanded(child:Container(
+        body: Center(child:Column(children: <Widget>[
+          //Container(),
+             //Expanded(
+            SingleChildScrollView(
+              //child:Expanded(
+                 child:Container(
                 decoration: (BoxDecoration(color: Colors.amber[200])),
-                height: height,
+                //height: height,
             //decoration: BoxDecoration(
               //image: DecorationImage(
                 //image: AssetImage("lib/wooden3.jpg"),
@@ -318,7 +325,9 @@ class _ItemState extends State<Item> {
         ),))
       ],),)
             ]))
-        )])
+        )
+    //)
+    ])
         ));
   }
 }

@@ -36,174 +36,174 @@ class _SettingState extends State<Setting> {
         ],
       ),
       body: Center(
-        child: Container(
-          decoration: BoxDecoration(
-             //この行を追加
-          ),
-          height: height*0.9,
-          child:Column(
-          //shrinkWrap: true,
-          children: <Widget>[
-          Container(height: height*0.07,
-          decoration: (BoxDecoration(
-            border:  Border(
-              bottom:  BorderSide(
-                color: Colors.brown[700],
-                width: 1,
-              ),
+          child: Container(
+            decoration: BoxDecoration(
+              //この行を追加
             ),
-          )),
-          child: ListTile(
-              title: Row(children: <Widget>[Icon(Icons.enhanced_encryption,size: 30*adjustsizeh,),Text('Application Lock',style: TextStyle(fontSize: fontsize, color: fontcolor))],),
-              trailing: CupertinoSwitch(
-                activeColor: Colors.lime.shade800,
-                value: statusbar,
-                onChanged: (bool value) {
-                  setState(() {
-                    statusbar = value;
-                  });
-                },
-              ),
-            ),
-          ),
-            Container(
-              height: height*0.07,
-              decoration: (BoxDecoration(
-                border:  Border(
-                  bottom:  BorderSide(
-                    color: Colors.brown[700],
-                    width: 1,
-                  ),
-                ),
-              )),
-              child:ListTile(
-                title: Row(children: <Widget>[Icon(Icons.star),Text('Emphasize Password',style: TextStyle(fontSize: fontsize, color: fontcolor))],),
-                trailing: CupertinoSwitch(
-                  activeColor: Colors.lime.shade800,
-                  value: PWcolor,
-                  onChanged: (bool value) {
-                    setState(() {
-                      PWcolor = value;
-                    });
-                  },
-                ),
-              ),),
-            Container(
-              height:height*0.07,
-              decoration: (BoxDecoration(
-                border:  Border(
-                  bottom:  BorderSide(
-                    color: Colors.brown[700],
-                    width: 1,
-                  ),
-                ),
-              )),
-              child:ListTile(
-                title: Row(children: <Widget>[Icon(Icons.notifications_none),Text('Display on Status Bar',style: TextStyle(fontSize: fontsize, color: fontcolor))],),
-                trailing: CupertinoSwitch(
-                  activeColor: Colors.lime.shade800,
-                  value: statusbar,
-                  onChanged: (bool value) {
-                    setState(() {
-                      statusbar = value;
-                    });
-                  },
-                ),
-              ),),
-          Container(height: height*0.17,
-            decoration: (BoxDecoration(
-              border:  Border(
-                bottom:  BorderSide(
-                  color: Colors.brown[700],
-                  width: 1,
-                ),
-              ),
-            )),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
+            height: height*0.9,
+            child:Column(
+              //shrinkWrap: true,
               children: <Widget>[
-            Row(mainAxisAlignment:MainAxisAlignment.center,children: <Widget>[Icon(Icons.list),Text('Display Item',style: TextStyle(fontSize: fontsize, color: fontcolor),),]),
-            Container(
-                height: height*0.06,
-                width: width*0.99,
-                child:Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                Container(height: height*0.07,
+                  decoration: (BoxDecoration(
+                    border:  Border(
+                      bottom:  BorderSide(
+                        color: Colors.brown[700],
+                        width: 1,
+                      ),
+                    ),
+                  )),
+                  child: ListTile(
+                    title: Row(children: <Widget>[Icon(Icons.enhanced_encryption,size: 30*adjustsizeh,),Text('Application Lock',style: TextStyle(fontSize: fontsize, color: fontcolor))],),
+                    trailing: CupertinoSwitch(
+                      activeColor: Colors.lime.shade800,
+                      value: statusbar,
+                      onChanged: (bool value) {
+                        setState(() {
+                          statusbar = value;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+                Container(
+                  height: height*0.07,
+                  decoration: (BoxDecoration(
+                    border:  Border(
+                      bottom:  BorderSide(
+                        color: Colors.brown[700],
+                        width: 1,
+                      ),
+                    ),
+                  )),
+                  child:ListTile(
+                    title: Row(children: <Widget>[Icon(Icons.star),Text('Emphasize Password',style: TextStyle(fontSize: fontsize, color: fontcolor))],),
+                    trailing: CupertinoSwitch(
+                      activeColor: Colors.lime.shade800,
+                      value: PWcolor,
+                      onChanged: (bool value) {
+                        setState(() {
+                          PWcolor = value;
+                        });
+                      },
+                    ),
+                  ),),
+                Container(
+                  height:height*0.07,
+                  decoration: (BoxDecoration(
+                    border:  Border(
+                      bottom:  BorderSide(
+                        color: Colors.brown[700],
+                        width: 1,
+                      ),
+                    ),
+                  )),
+                  child:ListTile(
+                    title: Row(children: <Widget>[Icon(Icons.notifications_none),Text('Display on Status Bar',style: TextStyle(fontSize: fontsize, color: fontcolor))],),
+                    trailing: CupertinoSwitch(
+                      activeColor: Colors.lime.shade800,
+                      value: statusbar,
+                      onChanged: (bool value) {
+                        setState(() {
+                          statusbar = value;
+                        });
+                      },
+                    ),
+                  ),),
+                Container(height: height*0.17,
+                  decoration: (BoxDecoration(
+                    border:  Border(
+                      bottom:  BorderSide(
+                        color: Colors.brown[700],
+                        width: 1,
+                      ),
+                    ),
+                  )),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                  Container(child:Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-              Checkbox(
-                activeColor: Colors.lime.shade800,
-                value: displayItem_tt, onChanged: (bool value) {
-              setState(() {
-                displayItem_tt = value;
-              });
-            },),
-                    Text('Title',style: TextStyle(fontSize: fontsize, color: fontcolor)),
-                 ]) ),
-              Container(child:Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-              Checkbox(
-                activeColor: Colors.lime.shade800,
-                value: displayItem_em, onChanged: (bool value) {
-                setState(() {
-                  displayItem_em = value;
-                });
-              },),
-                Text('ID,Email,UserName...',style: TextStyle(fontSize: fontsize, color: fontcolor)),
-              ]))])),
-            Container(
-                height: height*0.06,
-                width: width*0.99,
-                child:Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                  Container(child:Row(children: <Widget>[
-              Checkbox(
-                activeColor: Colors.lime.shade800,
-                value: displayItem_pw, onChanged: (bool value) {
-                setState(() {
-                  displayItem_pw = value;
-                });
-              },),
-                    Text('Password',style: TextStyle(fontSize: fontsize, color: fontcolor)),])),
-              Container(child:Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-              Checkbox(
-                activeColor: Colors.lime.shade800,
-                value: displayItem_ur, onChanged: (bool value) {
-                setState(() {
-                  displayItem_ur = value;
-                });
-              },),
-                Text('URL',style: TextStyle(fontSize: fontsize, color: fontcolor)),])),
-              Container(child:Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                  Checkbox(
-                    activeColor: Colors.lime.shade800,
-                    value: displayItem_mm, onChanged: (bool value) {
-                setState(() {
-                  displayItem_mm = value;
-                });
-              },),
-                Text('Memo',style: TextStyle(fontSize: fontsize, color: fontcolor)),
-              ])),
-                ],))
-          ],),),
-            SizedBox(height: height*0.37,),
-            Container(child:Column(children: <Widget>[
-              Text("※If you can't think of a new password, it'll help you" ,style: TextStyle(fontSize: 17,color: Colors.black54),),
-              SizedBox(height: height*0.005,),
-              Container(
-                height:height*0.07,child: ElevatedButton(child: Text('Create new PASSWORD (semi-auto)',style: TextStyle(fontSize: fontsize, color: Colors.yellow[600]),),
-              style: ElevatedButton.styleFrom(primary: Colors.brown[800]),
-              onPressed: (){},)),
-            ]),)
-        ],),)
+                      Row(mainAxisAlignment:MainAxisAlignment.center,children: <Widget>[Icon(Icons.list),Text('Display Item',style: TextStyle(fontSize: fontsize, color: fontcolor),),]),
+                      Container(
+                          height: height*0.06,
+                          width: width*0.99,
+                          child:Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Container(child:Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Checkbox(
+                                        activeColor: Colors.lime.shade800,
+                                        value: displayItem_tt, onChanged: (bool value) {
+                                        setState(() {
+                                          displayItem_tt = value;
+                                        });
+                                      },),
+                                      Text('Title',style: TextStyle(fontSize: fontsize, color: fontcolor)),
+                                    ]) ),
+                                Container(child:Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Checkbox(
+                                        activeColor: Colors.lime.shade800,
+                                        value: displayItem_em, onChanged: (bool value) {
+                                        setState(() {
+                                          displayItem_em = value;
+                                        });
+                                      },),
+                                      Text('ID,Email,UserName...',style: TextStyle(fontSize: fontsize, color: fontcolor)),
+                                    ]))])),
+                      Container(
+                          height: height*0.06,
+                          width: width*0.99,
+                          child:Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Container(child:Row(children: <Widget>[
+                                Checkbox(
+                                  activeColor: Colors.lime.shade800,
+                                  value: displayItem_pw, onChanged: (bool value) {
+                                  setState(() {
+                                    displayItem_pw = value;
+                                  });
+                                },),
+                                Text('Password',style: TextStyle(fontSize: fontsize, color: fontcolor)),])),
+                              Container(child:Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Checkbox(
+                                      activeColor: Colors.lime.shade800,
+                                      value: displayItem_ur, onChanged: (bool value) {
+                                      setState(() {
+                                        displayItem_ur = value;
+                                      });
+                                    },),
+                                    Text('URL',style: TextStyle(fontSize: fontsize, color: fontcolor)),])),
+                              Container(child:Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Checkbox(
+                                      activeColor: Colors.lime.shade800,
+                                      value: displayItem_mm, onChanged: (bool value) {
+                                      setState(() {
+                                        displayItem_mm = value;
+                                      });
+                                    },),
+                                    Text('Memo',style: TextStyle(fontSize: fontsize, color: fontcolor)),
+                                  ])),
+                            ],))
+                    ],),),
+                SizedBox(height: height*0.37,),
+                Container(child:Column(children: <Widget>[
+                  Text("※If you can't think of a new password, it'll help you" ,style: TextStyle(fontSize: 17,color: Colors.black54),),
+                  SizedBox(height: height*0.005,),
+                  Container(
+                      height:height*0.07,child: ElevatedButton(child: Text('Create new PASSWORD (semi-auto)',style: TextStyle(fontSize: fontsize, color: Colors.yellow[600]),),
+                    style: ElevatedButton.styleFrom(primary: Colors.brown[800]),
+                    onPressed: (){},)),
+                ]),)
+              ],),)
       ),
     );
   }
