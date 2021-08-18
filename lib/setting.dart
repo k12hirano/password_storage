@@ -16,6 +16,8 @@ class _SettingState extends State<Setting> {
   var displayItem_mm = true;
   var PWcolor =false;
   var statusbar = false;
+  var PWconseal = false;
+  var applicationLock = false;
   double fontsize = 20;
   Color fontcolor = Colors.brown[800];
 
@@ -57,10 +59,10 @@ class _SettingState extends State<Setting> {
                     title: Row(children: <Widget>[Icon(Icons.enhanced_encryption,size: 30*adjustsizeh,),Text('Application Lock',style: TextStyle(fontSize: fontsize, color: fontcolor))],),
                     trailing: CupertinoSwitch(
                       activeColor: Colors.lime.shade800,
-                      value: statusbar,
+                      value: applicationLock,
                       onChanged: (bool value) {
                         setState(() {
-                          statusbar = value;
+                          applicationLock = value;
                         });
                       },
                     ),
@@ -77,7 +79,7 @@ class _SettingState extends State<Setting> {
                     ),
                   )),
                   child:ListTile(
-                    title: Row(children: <Widget>[Icon(Icons.star),Text('Emphasize Password',style: TextStyle(fontSize: fontsize, color: fontcolor))],),
+                    title: Row(children: <Widget>[Icon(Icons.font_download),Text('Emphasize Password',style: TextStyle(fontSize: fontsize, color: fontcolor))],),
                     trailing: CupertinoSwitch(
                       activeColor: Colors.lime.shade800,
                       value: PWcolor,
@@ -106,6 +108,28 @@ class _SettingState extends State<Setting> {
                       onChanged: (bool value) {
                         setState(() {
                           statusbar = value;
+                        });
+                      },
+                    ),
+                  ),),
+                Container(
+                  height: height*0.07,
+                  decoration: (BoxDecoration(
+                    border:  Border(
+                      bottom:  BorderSide(
+                        color: Colors.brown[700],
+                        width: 1,
+                      ),
+                    ),
+                  )),
+                  child:ListTile(
+                    title: Row(children: <Widget>[Icon(Icons.star),Text('Conseal Password',style: TextStyle(fontSize: fontsize, color: fontcolor))],),
+                    trailing: CupertinoSwitch(
+                      activeColor: Colors.lime.shade800,
+                      value: PWconseal,
+                      onChanged: (bool value) {
+                        setState(() {
+                          PWconseal = value;
                         });
                       },
                     ),
@@ -194,7 +218,7 @@ class _SettingState extends State<Setting> {
                                   ])),
                             ],))
                     ],),),
-                SizedBox(height: height*0.37,),
+                SizedBox(height: height*0.21,),
                 Container(child:Column(children: <Widget>[
                   Text("※If you can't think of a new password, it'll help you" ,style: TextStyle(fontSize: 17,color: Colors.black54),),
                   SizedBox(height: height*0.005,),

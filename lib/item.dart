@@ -29,38 +29,52 @@ class _ItemState extends State<Item> {
   var passtext = TextEditingController();
   var urltext = TextEditingController();
   var memotext = TextEditingController();
+  var titletext123 = TextEditingController(text: 'controller');
   TextEditingController titletext0;
   TextEditingController emailtext0;
   TextEditingController passtext0;
   TextEditingController urltext0;
   TextEditingController memotext0;
+  bool datagetflg = false;
   //_ItemState(this.titletext0, this.emailtext0, this.passtext0, this.urltext0, this.memotext0);
 
   @override
   void initState() {
     isSelected = [true, false];
-    if(widget.argumentmode == 1){getdata(widget.id);}else{}
+    if(widget.argumentmode == 1){
+      setState(() {
+        getdata(widget.id);
+      });print(widget.id);}else{}
     super.initState();
   }
 
   @override
   // widgetの破棄時にコントローラも破棄する
   void dispose() {
+    titletext?.dispose();
     titletext0?.dispose();
+    emailtext?.dispose();
     emailtext0?.dispose();
+    passtext?.dispose();
     passtext0?.dispose();
     urltext0?.dispose();
+    urltext?.dispose();
     memotext0?.dispose();
+    memotext?.dispose();
     super.dispose();
   }
 
   void getdata(int id) async{
+    datagetflg = false;
    var forEdit = await DBProvider().select(id);
     titletext0 = TextEditingController(text:forEdit[0].title);
     emailtext0 = TextEditingController(text:forEdit[0].email);
     passtext0 = TextEditingController(text:forEdit[0].pass);
     urltext0 = TextEditingController(text:forEdit[0].url);
     memotext0 = TextEditingController(text:forEdit[0].memo);
+    setState(() {
+      datagetflg = true;
+    });
     print('getdataした');
     print(id);
     print(titletext0);
@@ -75,13 +89,17 @@ class _ItemState extends State<Item> {
     print(urltext.text);
     print(memotext.text);
     print('goal');
-    return await  ItemkunRepository(DBProvider()).tukkomu(Itemkun(title: titletext.text,email:emailtext.text ,pass:passtext.text ,url:urltext.text ,memo:memotext.text,date: DateTime.now().toString() ));
+    return await  ItemkunRepository(DBProvider()).tukkomu(Itemkun(title: titletext.text,email:emailtext.text ,pass:passtext.text ,url:urltext.text ,memo:memotext.text,date: DateTime.now().toString()));
 
     //titletext0.clear();
     //emailtext0.clear();
     //passtext0.clear();
     //urltext0.clear();
     //memotext0.clear();
+  }
+
+  void updatedesu() async {
+    return await ItemkunRepository(DBProvider()).update(Itemkun(title: titletext0.text,email: emailtext0.text, pass: passtext0.text, url: urltext0.text, memo: memotext0.text,date: DateTime.now().toString()), widget.id);
   }
 
   @override
@@ -91,6 +109,7 @@ class _ItemState extends State<Item> {
     final adjustsizeh = MediaQuery.of(context).size.height * 0.0011;
 
     return Scaffold(
+      backgroundColor: Colors.amber[200],
         appBar: AppBar(
           elevation: 8,
           leading:IconButton(
@@ -127,12 +146,14 @@ class _ItemState extends State<Item> {
             ),
           ],
         ),
-        body: Center(child:Column(children: <Widget>[
+        body: Center(child:
+        //Column(children: <Widget>[
           //Container(),
              //Expanded(
             SingleChildScrollView(
               //child:Expanded(
                  child:Container(
+                   height: height*0.95,
                 decoration: (BoxDecoration(color: Colors.amber[200])),
                 //height: height,
             //decoration: BoxDecoration(
@@ -154,9 +175,9 @@ class _ItemState extends State<Item> {
         Container(
           height: height*0.075,
           width: width*0.85,
-          child: (widget.argumentmode == 1)?TextFormField( decoration: InputDecoration(
+          child: (widget.argumentmode == 1 && datagetflg == true)?TextFormField( decoration: InputDecoration(
             labelText: 'title'),
-              controller: titletext,
+              controller: titletext0,
               //initialValue: vm.isNew ? '' : vm.memo.title,
               //validator: (value) => (value.isEmpty) ? 'タイトルを入力して下さい' : null,
              // onChanged: (value) => vm.setTitle(value),
@@ -167,7 +188,7 @@ class _ItemState extends State<Item> {
             ))
           :TextFormField( decoration: InputDecoration(
               labelText: 'title'),
-              controller: titletext0,
+              controller: titletext,
               //initialValue: vm.isNew ? '' : vm.memo.title,
               //validator: (value) => (value.isEmpty) ? 'タイトルを入力して下さい' : null,
               // onChanged: (value) => vm.setTitle(value),
@@ -179,9 +200,9 @@ class _ItemState extends State<Item> {
         Container(
           height: height*0.075,
           width: width*0.85,
-          child: (widget.argumentmode == 1) ?TextFormField( decoration: InputDecoration(
+          child: (widget.argumentmode == 1 && datagetflg == true) ?TextFormField( decoration: InputDecoration(
         labelText: 'id/Email/user name/etc...'),
-              controller: emailtext,
+              controller: emailtext0,
               //initialValue: vm.isNew ? '' : vm.memo.title,
               //validator: (value) => (value.isEmpty) ? '' : null,
               //onChanged: (value) => vm.setTitle(value),
@@ -192,7 +213,7 @@ class _ItemState extends State<Item> {
             ))
               :TextFormField( decoration: InputDecoration(
               labelText: 'id/Email/user name/etc...'),
-              controller: emailtext0,
+              controller: emailtext,
               //initialValue: vm.isNew ? '' : vm.memo.title,
               //validator: (value) => (value.isEmpty) ? '' : null,
               //onChanged: (value) => vm.setTitle(value),
@@ -204,9 +225,9 @@ class _ItemState extends State<Item> {
         Container(
           height: height*0.08,
           width: width*0.85,
-          child: (widget.argumentmode == 1) ?TextFormField( decoration: InputDecoration(
+          child: (widget.argumentmode == 1 && datagetflg == true) ?TextFormField( decoration: InputDecoration(
             labelText: 'PassWord'),
-              controller: passtext,
+              controller: passtext0,
               //initialValue: vm.isNew ? '' : vm.memo.title,
               //validator: (value) => (value.isEmpty) ? 'タイトルを入力して下さい' : null,
               //onChanged: (value) => vm.setTitle(value),
@@ -217,7 +238,7 @@ class _ItemState extends State<Item> {
             ))
           :TextFormField( decoration: InputDecoration(
         labelText: 'PassWord'),
-                controller: passtext0,
+                controller: passtext,
                 //initialValue: vm.isNew ? '' : vm.memo.title,
                 //validator: (value) => (value.isEmpty) ? 'タイトルを入力して下さい' : null,
                 //onChanged: (value) => vm.setTitle(value),
@@ -229,9 +250,9 @@ class _ItemState extends State<Item> {
         Container(
           height: height*0.075,
           width: width*0.85,
-          child: (widget.argumentmode == 1) ?TextFormField(decoration: InputDecoration(
+          child: (widget.argumentmode == 1 && datagetflg == true) ?TextFormField(decoration: InputDecoration(
             labelText: 'URL'),
-              controller: urltext,
+              controller: urltext0,
               //initialValue: vm.isNew ? '' : vm.memo.title,
               //validator: (value) => (value.isEmpty) ? 'タイトルを入力して下さい' : null,
               //onChanged: (value) => vm.setTitle(value),
@@ -242,7 +263,7 @@ class _ItemState extends State<Item> {
             ))
           :TextFormField(decoration: InputDecoration(
               labelText: 'URL'),
-              controller: urltext0,
+              controller: urltext,
               //initialValue: vm.isNew ? '' : vm.memo.title,
               //validator: (value) => (value.isEmpty) ? 'タイトルを入力して下さい' : null,
               //onChanged: (value) => vm.setTitle(value),
@@ -258,9 +279,9 @@ class _ItemState extends State<Item> {
           Container(
             height: height*0.15,
             width: width*0.85,
-            child: (widget.argumentmode == 1) ?TextFormField( decoration: InputDecoration(
+            child: (widget.argumentmode == 1 && datagetflg == true) ?TextFormField( decoration: InputDecoration(
               labelText: 'memo'),
-                controller: memotext,
+                controller: memotext0,
                 //initialValue: vm.isNew ? '' : vm.memo.title,
                 //validator: (value) => (value.isEmpty) ? 'タイトルを入力して下さい' : null,
                 //onChanged: (value) => vm.setTitle(value),
@@ -273,7 +294,7 @@ class _ItemState extends State<Item> {
               ))
             :TextFormField( decoration: InputDecoration(
                 labelText: 'memo'),
-                controller: memotext0,
+                controller: memotext,
                 //initialValue: vm.isNew ? '' : vm.memo.title,
                 //validator: (value) => (value.isEmpty) ? 'タイトルを入力して下さい' : null,
                 //onChanged: (value) => vm.setTitle(value),
@@ -327,7 +348,7 @@ class _ItemState extends State<Item> {
             ]))
         )
     //)
-    ])
+  //  ])
         ));
   }
 }

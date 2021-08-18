@@ -127,6 +127,8 @@ class DBProvider {
   }
 
   Future delete(int id) async {
+    print('delete吉良');
+    print(id);
     final db = await database;
     return await db.delete(
       itemtable,

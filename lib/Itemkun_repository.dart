@@ -8,7 +8,6 @@ class ItemkunRepository{
 
 
   String table = 'ItemList';
-  //DBProvider instance = DBProvider.instance;
 
   Future<Itemkun> create(String title, String email, String pass, String url,
       String memo) async{
