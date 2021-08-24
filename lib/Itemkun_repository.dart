@@ -18,9 +18,10 @@ class ItemkunRepository{
       'pass' :pass,
       'url' :url,
       'memo' :memo,
+      'favorite' : 0,
       'date' :now.toString()
     };
-    final Itemkun _itemkun = Itemkun(id:null, title: title, email: email, pass: pass, url: url, memo: memo,date: now.toString());
+    final Itemkun _itemkun = Itemkun(id:null, title: title, email: email, pass: pass, url: url, memo: memo, favorite: 0 ,date: now.toString());
     //final db = await instance.database;
     final db = await itemdatabase;
     //final id = await db.insert(table, row);
@@ -33,6 +34,7 @@ class ItemkunRepository{
         pass: row['pass'],
         url: row['url'],
         memo: row['memo'],
+        favorite: row['favorite'],
         date: now.toString(),);
   }
 

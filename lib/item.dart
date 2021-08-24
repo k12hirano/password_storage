@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:password_storage/Itemkun.dart';
 import 'package:password_storage/Itemkun_repository.dart';
@@ -36,6 +37,9 @@ class _ItemState extends State<Item> {
   TextEditingController urltext0;
   TextEditingController memotext0;
   bool datagetflg = false;
+  bool memostyle = false;
+  double TextFieldFontSize = 20;
+  bool favo;
   //_ItemState(this.titletext0, this.emailtext0, this.passtext0, this.urltext0, this.memotext0);
 
   @override
@@ -74,6 +78,11 @@ class _ItemState extends State<Item> {
     memotext0 = TextEditingController(text:forEdit[0].memo);
     setState(() {
       datagetflg = true;
+      if(forEdit[0].favorite==0){
+        favo=false;
+      }else{
+        favo=true;
+      }
     });
     print('getdataした');
     print(id);
@@ -89,7 +98,7 @@ class _ItemState extends State<Item> {
     print(urltext.text);
     print(memotext.text);
     print('goal');
-    return await  ItemkunRepository(DBProvider()).tukkomu(Itemkun(title: titletext.text,email:emailtext.text ,pass:passtext.text ,url:urltext.text ,memo:memotext.text,date: DateTime.now().toString()));
+    return await  ItemkunRepository(DBProvider()).tukkomu(Itemkun(title: titletext.text,email:emailtext.text ,pass:passtext.text ,url:urltext.text ,memo:memotext.text,favorite: 0, date: DateTime.now().toString()));
 
     //titletext0.clear();
     //emailtext0.clear();
@@ -99,7 +108,38 @@ class _ItemState extends State<Item> {
   }
 
   void updatedesu() async {
-    return await ItemkunRepository(DBProvider()).update(Itemkun(title: titletext0.text,email: emailtext0.text, pass: passtext0.text, url: urltext0.text, memo: memotext0.text,date: DateTime.now().toString()), widget.id);
+    //TODO favorite adjust
+    if(favo=false) {
+      return await ItemkunRepository(DBProvider()).update(Itemkun(
+          title: titletext0.text,
+          email: emailtext0.text,
+          pass: passtext0.text,
+          url: urltext0.text,
+          memo: memotext0.text,
+          favorite: 0,
+          date: DateTime.now().toString()), widget.id);
+    }else{
+      return await ItemkunRepository(DBProvider()).update(Itemkun(
+          title: titletext0.text,
+          email: emailtext0.text,
+          pass: passtext0.text,
+          url: urltext0.text,
+          memo: memotext0.text,
+          favorite: 1,
+          date: DateTime.now().toString()), widget.id);
+    }
+    }
+
+  favoriteOnOff() async{
+    List<Itemkun> dataget = await DBProvider().select(widget.id);
+    DBProvider().update(Itemkun(id: widget.id, title: dataget[0].title, email: dataget[0].email, pass: dataget[0].pass, url: dataget[0].url, memo: dataget[0].memo, favorite: 1, date: dataget[0].date), widget.id);
+    setState(() {
+      if(favo){
+        favo=false;
+      }else{
+        favo=true;
+      }
+    });
   }
 
   @override
@@ -108,41 +148,120 @@ class _ItemState extends State<Item> {
     final width = MediaQuery.of(context).size.width;
     final adjustsizeh = MediaQuery.of(context).size.height * 0.0011;
 
+
     return Scaffold(
       backgroundColor: Colors.amber[200],
         appBar: AppBar(
           elevation: 8,
-          leading:IconButton(
-            icon:Icon(Icons.home)
-            ,onPressed:() {
-          },),
+          leading: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: (widget.argumentmode == 1) ?IconButton(
+              icon: Icon(Icons.copy),
+              onPressed: () => {
+              },
+            )
+            :Container(),
+          ),
           centerTitle: true,
           title:Text("Detail / Edit ",style: TextStyle(color: Colors.yellow[200]),),
           backgroundColor: Colors.brown[800],
           actions: [
+
             Padding(
               padding: const EdgeInsets.all(4.0),
-              child: IconButton(
-                icon: Icon(Icons.copy),
+              child:(widget.argumentmode ==1) ? IconButton(
+                icon: (favo==false)?Icon(Icons.favorite,color: Colors.white)
+                :Icon(Icons.favorite, color: Colors.yellow[200],),
                 onPressed: () => {
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: IconButton(
-                icon: Icon(Icons.favorite),
-                onPressed: () => {
+                  favoriteOnOff()
                       },
-                ),
+                )
+              :Container(),
                 ),
             Padding(
               padding: const EdgeInsets.all(4.0),
-              child: IconButton(
+              child: (widget.argumentmode == 1)?IconButton(
                 icon: Icon(Icons.delete),
                 onPressed: () => {
+                  //TODO DIALOG TO DELETE
+                   showDialog(
+                  context: context,
+                  builder: (_) {
+    return AlertDialog(
+
+    //content: Text("DELETE THIS ITEM?", style: TextStyle(color: Colors.lightBlue, fontSize: 20, fontWeight: FontWeight.w500),),
+    actions: <Widget>[
+      Container(
+    height:height*0.2,
+      width: width*0.7,
+      child:Column(
+        children: <Widget>[
+          Container(
+            height:height*0.15,
+            width: width*0.7,
+            alignment: Alignment.center,
+            child: Text("DELETE THIS ITEM?", style: TextStyle(color: Colors.lightBlue, fontSize: 20, fontWeight: FontWeight.w500),),),
+                    Container(
+            height:height*0.05,
+            width: width*0.7,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+              InkWell(
+                child: Container(
+                  height:height*0.05,
+                  width: width*0.35,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(
+                        color: Colors.lightBlue,
+                        width: 2,
+                      ),
+                      right: BorderSide(
+                        color: Colors.lightBlue,
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                  child: Text('Cancel', style: TextStyle(color: Colors.lightBlue, fontSize: 18, fontWeight: FontWeight.w500),),),
+                onTap: (){
+                  Navigator.pop(context);
+                },),
+              InkWell(child: Container(
+                height:height*0.05,
+                width:width*0.35,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border(
+                    left: BorderSide(
+                      color: Colors.lightBlue,
+                      width: 1,
+                    ),
+                    top: BorderSide(
+                      color: Colors.lightBlue,
+                      width: 2,
+                    ),
+                  ),
+                ),
+                child: Text('Delete', style: TextStyle(color: Colors.lightBlue, fontSize: 18, fontWeight: FontWeight.w500),),),
+                onTap: (){
+                  DBProvider().delete(widget.id);
+                  int count = 0;
+                  Navigator.popUntil(context, (_) => count++ >= 2);
+                },)
+            ],),
+          )
+        ],
+      )
+      )
+      ],
+    );
+    },
+    )
                 },
-              ),
+              )
+              :Container(),
             ),
           ],
         ),
@@ -153,7 +272,7 @@ class _ItemState extends State<Item> {
             SingleChildScrollView(
               //child:Expanded(
                  child:Container(
-                   height: height*0.95,
+                   height: height*0.9,
                 decoration: (BoxDecoration(color: Colors.amber[200])),
                 //height: height,
             //decoration: BoxDecoration(
@@ -166,7 +285,25 @@ class _ItemState extends State<Item> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children:<Widget>[
-      Container(
+              (widget.argumentmode==0)?Container(
+                height: height*0.05,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                  CupertinoSwitch(
+                    activeColor: Colors.brown[700],
+                    value: memostyle,
+                    onChanged: (bool value) {
+                      setState(() {
+                         memostyle= value;
+                      });
+                    },
+                  ),
+                  Container(child: Text('MEMO STYLE',style: TextStyle(fontSize: 18),),),
+                ],),
+              )
+              :Container(),
+              (memostyle == false)?Container(
         height:height*0.5,
         child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -182,7 +319,7 @@ class _ItemState extends State<Item> {
               //validator: (value) => (value.isEmpty) ? 'タイトルを入力して下さい' : null,
              // onChanged: (value) => vm.setTitle(value),
             style: TextStyle(
-                fontSize: 17,
+                fontSize: TextFieldFontSize,
                 height: 2.0,
                 color: Colors.brown
             ))
@@ -193,7 +330,7 @@ class _ItemState extends State<Item> {
               //validator: (value) => (value.isEmpty) ? 'タイトルを入力して下さい' : null,
               // onChanged: (value) => vm.setTitle(value),
               style: TextStyle(
-                  fontSize: 17,
+                  fontSize: TextFieldFontSize,
                   height: 2.0,
                   color: Colors.brown
               )),),
@@ -207,7 +344,7 @@ class _ItemState extends State<Item> {
               //validator: (value) => (value.isEmpty) ? '' : null,
               //onChanged: (value) => vm.setTitle(value),
               style: TextStyle(
-                fontSize: 17,
+                fontSize: TextFieldFontSize,
                 height: 2.0,
                 color: Colors.brown
             ))
@@ -218,7 +355,7 @@ class _ItemState extends State<Item> {
               //validator: (value) => (value.isEmpty) ? '' : null,
               //onChanged: (value) => vm.setTitle(value),
               style: TextStyle(
-                  fontSize: 17,
+                  fontSize: TextFieldFontSize,
                   height: 2.0,
                   color: Colors.brown
               )),),
@@ -232,7 +369,7 @@ class _ItemState extends State<Item> {
               //validator: (value) => (value.isEmpty) ? 'タイトルを入力して下さい' : null,
               //onChanged: (value) => vm.setTitle(value),
             style: TextStyle(
-                fontSize: 20,
+                fontSize: TextFieldFontSize,
                 height: 2.0,
                 color: Colors.brown
             ))
@@ -243,7 +380,7 @@ class _ItemState extends State<Item> {
                 //validator: (value) => (value.isEmpty) ? 'タイトルを入力して下さい' : null,
                 //onChanged: (value) => vm.setTitle(value),
                 style: TextStyle(
-                    fontSize: 20,
+                    fontSize: TextFieldFontSize,
                     height: 2.0,
                     color: Colors.brown
                 )),),
@@ -257,7 +394,7 @@ class _ItemState extends State<Item> {
               //validator: (value) => (value.isEmpty) ? 'タイトルを入力して下さい' : null,
               //onChanged: (value) => vm.setTitle(value),
             style: TextStyle(
-                fontSize: 17,
+                fontSize: 18,
                 height: 2.0,
                 color: Colors.brown
             ))
@@ -268,7 +405,7 @@ class _ItemState extends State<Item> {
               //validator: (value) => (value.isEmpty) ? 'タイトルを入力して下さい' : null,
               //onChanged: (value) => vm.setTitle(value),
               style: TextStyle(
-                  fontSize: 17,
+                  fontSize: 18,
                   height: 2.0,
                   color: Colors.brown
               )),),
@@ -288,7 +425,7 @@ class _ItemState extends State<Item> {
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
               style: TextStyle(
-                  fontSize: 15,
+                  fontSize: TextFieldFontSize,
                   height: 2.0,
                   color: Colors.brown
               ))
@@ -301,25 +438,42 @@ class _ItemState extends State<Item> {
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 style: TextStyle(
-                    fontSize: 15,
+                    fontSize: TextFieldFontSize,
                     height: 2.0,
                     color: Colors.brown
                 )),)
               //:Container()
        // ],),
         //)
-      ],),),
+      ],),)
+              :Container(
+                alignment: Alignment.topCenter,
+                padding: EdgeInsets.fromLTRB(50, 0, 50, 200),
+                height: height*0.5,
+                child: TextFormField( decoration: InputDecoration(
+                  labelText: 'memo'),
+                  controller: memotext,
+                  //initialValue: vm.isNew ? '' : vm.memo.title,
+                  //validator: (value) => (value.isEmpty) ? 'タイトルを入力して下さい' : null,
+                  //onChanged: (value) => vm.setTitle(value),
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 100,
+                  style: TextStyle(
+                      fontSize: 15,
+                      height: 2.0,
+                      color: Colors.brown
+                  )),),
       Container(child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
         Container(
-            height: height*0.03,
-            width:width*0.2,
+            height: height*0.05,
+            width:width*0.3,
             child:ElevatedButton(onPressed: (){
               Navigator.pop(context);
               //Navigator.push(context, MaterialPageRoute(builder: (context) =>Root(
               //)));
-            }, child: Text('cancel',style: TextStyle(fontSize: 14*adjustsizeh,color: Colors.yellow[200]),), style:  ElevatedButton.styleFrom(
+            }, child: Text('cancel',style: TextStyle(fontSize: 18*adjustsizeh,color: Colors.yellow[200]),), style:  ElevatedButton.styleFrom(
           primary: Colors.brown,
           elevation: 10,
           shape: RoundedRectangleBorder(
@@ -330,12 +484,12 @@ class _ItemState extends State<Item> {
         ))),
         SizedBox(width: width*0.1,),
         Container(
-            height: height*0.03,
-            width:width*0.2,
-            child:ElevatedButton(onPressed: (){
+            height: height*0.05,
+            width:width*0.3,
+            child:(widget.argumentmode == 0)?ElevatedButton(onPressed: (){
              insertdesu();
              Navigator.pop(context);
-            }, child: Text('OK',style: TextStyle(fontSize: 14*adjustsizeh ,color: Colors.yellow[400]),), style:  ElevatedButton.styleFrom(
+            }, child: Text('OK',style: TextStyle(fontSize: 18*adjustsizeh ,color: Colors.yellow[400]),), style:  ElevatedButton.styleFrom(
             primary: Colors.brown,
             elevation: 10,
             shape: RoundedRectangleBorder(
@@ -343,7 +497,20 @@ class _ItemState extends State<Item> {
                 Radius.circular(10),
               ),
             )
-        ),))
+        ),)
+                :ElevatedButton(onPressed: (){
+              updatedesu();
+              Navigator.pop(context);
+            }, child: Text('OK',style: TextStyle(fontSize: 18*adjustsizeh ,color: Colors.yellow[400]),), style:  ElevatedButton.styleFrom(
+                primary: Colors.brown,
+                elevation: 10,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                )
+            ),)
+        )
       ],),)
             ]))
         )

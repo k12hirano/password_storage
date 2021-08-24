@@ -8,6 +8,7 @@ class Itemkun {
   String pass;
   String url;
   String memo;
+  int favorite;
   String date;
 
 
@@ -30,6 +31,7 @@ class Itemkun {
     this.pass,
     this.url,
     this.memo,
+    this.favorite,
     this.date
   });
 
@@ -41,6 +43,7 @@ class Itemkun {
       'pass': pass,
       'url': url,
       'memo': memo,
+      'favorite': favorite,
       'date': date
     };
   }

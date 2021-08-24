@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:password_storage/Itemkun.dart';
+import 'package:password_storage/settingkun.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:io/io.dart';
@@ -20,7 +21,10 @@ class DBProvider {
   final String _pass = 'pass';
   final String _url = 'url';
   final String _memo = 'memo';
+  final String _favorite = 'favorite';
   final String _date = 'date';
+
+  final String setting ='setting';
 
   Database database1;
 
@@ -39,22 +43,13 @@ class DBProvider {
     );
   }
   Future<void> createTable(Database db, int version) async {
-   // String sql = '''
-   //   CREATE TABLE
-     // $_tablename(
-       // $_id TEXT PRIMARY KEY,
-        //$_title TEXT,
-       // $_email TEXT,
-        //$_pass TEXT,
-        //$_url TEXT,
-        //$_memo TEXT,
-        //$_date TEXT,
-      //)
-      //''';
 
-    return await db.execute('CREATE TABLE item(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, email TEXT, pass TEXT, url TEXT, memo TEXT, date TEXT)');
-    print('create table');
-    // await db.execute('CREATE TABLE Item(_id TEXT PRIMARY KEY, _title TEXT, _email TEXT, _pass TEXT, _url TEXT, _memo TEXT, _date TEXT)');
+
+     await db.execute('CREATE TABLE item(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, email TEXT, pass TEXT, url TEXT, memo TEXT,favorite INTEGER, date TEXT)');
+
+     await db.execute('CREATE TABLE setting(id INTEGER PRIMARY KEY, lock INTEGER, emph INTEGER, status INTEGER, conseal INTEGER, display1 INTEGER DEFAULT 1, display2 INTEGER DEFAULT 1, display3 INTEGER DEFAULT 1, display4 INTEGER DEFAULT 1, display5 INTEGER DEFAULT 1, date TEXT)');
+
+     //insertSetting(Settingkun(id: 1,lock: 0, emph: 0, status: 0, conseal: 0, display1: 1, display2: 1, display3: 1, display4: 1, display5: 1));
   }
 
 
@@ -105,6 +100,8 @@ class DBProvider {
     return [];
     }else {print(maps);print('db.search');
       return maps.map((map) => fromMap(map)).toList();
+
+      //return maps.map((map) => fromMap(map));
     }
   }
 
@@ -139,12 +136,13 @@ class DBProvider {
 
   Map<String, dynamic> toMap(Itemkun item) {
     return {
-      //_id: item.id,
+      _id: item.id,
       _title: item.title,
       _email: item.email,
       _pass: item.pass,
       _url: item.url,
       _memo: item.memo,
+      _favorite: item.favorite,
       _date: item.date
     };
   }
@@ -157,8 +155,73 @@ class DBProvider {
       pass: json[_pass],
       url: json[_url],
       memo: json[_memo],
+      favorite: json[_favorite],
       date: json[_date]
     );
   }
 
+
+
+
+
+  Future<List<Settingkun>> getSetting() async {
+    final db = await database;
+    if (database1 == null){
+      database1 = await initdb();
+      print('hey');}
+    var maps = await db.query(
+      setting,
+    );
+    if (maps.isEmpty) return [];
+    return maps.map((map) => fromMapSetting(map)).toList();
+  }
+
+  Future insertSetting(settings) async {
+    final db = await database;
+    await db.insert(setting, settings.toMap());
+  }
+
+
+  Future updateSetting(settings) async {
+    final db = await database;
+    return await db.update(
+      setting,
+      toMap(settings),
+      where: 'id = 1',
+    );
+  }
+
+  Map<String, dynamic> toMapSetting(Settingkun settingkun) {
+    return {
+      'id': settingkun.id,
+      'lock': settingkun.lock,
+      'emph': settingkun.emph,
+      'status': settingkun.status,
+      'conseal': settingkun.conseal,
+      'display1': settingkun.display1,
+      'display2': settingkun.display2,
+      'display3': settingkun.display3,
+      'display4': settingkun.display4,
+      'display5': settingkun.display5,
+      'date': settingkun.date
+    };
+  }
+
+  Settingkun fromMapSetting(Map<String, dynamic> json) {
+    return Settingkun(
+        id: json['id'],
+        lock: json['lock'],
+        emph: json['emph'],
+        status: json['status'],
+        conseal: json['conseal'],
+        display1: json['display1'],
+        display2: json['display2'],
+        display3: json['display3'],
+        display4: json['display4'],
+        display5: json['display5'],
+        date: json['date']
+    );
+  }
+
 }
+

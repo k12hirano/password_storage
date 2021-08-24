@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:password_storage/Itemkun_repository.dart';
+import 'package:password_storage/db.dart';
+import 'package:password_storage/settingkun.dart';
 
 
 class Setting extends StatefulWidget {
@@ -20,6 +23,102 @@ class _SettingState extends State<Setting> {
   var applicationLock = false;
   double fontsize = 20;
   Color fontcolor = Colors.brown[800];
+
+  lock() async {
+    var karioki = await DBProvider().getSetting();
+    if (karioki[0].lock == 1) {
+      DBProvider().updateSetting(Settingkun(id: karioki[0].id,
+          lock: 0,
+          emph: karioki[0].emph,
+          status: karioki[0].status,
+          conseal: karioki[0].conseal,
+          display1: karioki[0].display1,
+          display2: karioki[0].display2,
+          display3: karioki[0].display3,
+          display4: karioki[0].display4,
+          display5: karioki[0].display5,
+          date: karioki[0].date));
+    } else {
+      DBProvider().updateSetting(Settingkun(id: karioki[0].id,
+          lock: 1,
+          emph: karioki[0].emph,
+          status: karioki[0].status,
+          conseal: karioki[0].conseal,
+          display1: karioki[0].display1,
+          display2: karioki[0].display2,
+          display3: karioki[0].display3,
+          display4: karioki[0].display4,
+          display5: karioki[0].display5,
+          date: karioki[0].date));
+    }
+  }
+  emphasize() async {
+    var karioki = await DBProvider().getSetting();
+    if(karioki[0].emph ==1){
+      DBProvider().updateSetting(Settingkun(id: karioki[0].id, lock: karioki[0].lock,emph: 0, status: karioki[0].status, conseal: karioki[0].conseal, display1: karioki[0].display1, display2: karioki[0].display2, display3: karioki[0].display3, display4: karioki[0].display4, display5: karioki[0].display5, date: karioki[0].date));
+    }else{
+      DBProvider().updateSetting(Settingkun(id: karioki[0].id, lock: karioki[0].lock,emph: 1, status: karioki[0].status, conseal: karioki[0].conseal, display1: karioki[0].display1, display2: karioki[0].display2, display3: karioki[0].display3, display4: karioki[0].display4, display5: karioki[0].display5, date: karioki[0].date));
+    }
+  }
+    status() async {
+      var karioki = await DBProvider().getSetting();
+      if(karioki[0].status == 1){
+        DBProvider().updateSetting(Settingkun(id: karioki[0].id, lock: karioki[0].lock,emph: karioki[0].emph, status: 0, conseal: karioki[0].conseal, display1: karioki[0].display1, display2: karioki[0].display2, display3: karioki[0].display3, display4: karioki[0].display4, display5: karioki[0].display5, date: karioki[0].date));
+      }else{
+        DBProvider().updateSetting(Settingkun(id: karioki[0].id, lock: karioki[0].lock,emph: karioki[0].emph, status: 1, conseal: karioki[0].conseal, display1: karioki[0].display1, display2: karioki[0].display2, display3: karioki[0].display3, display4: karioki[0].display4, display5: karioki[0].display5, date: karioki[0].date));
+      }
+    }
+    conseal() async {
+      var karioki = await DBProvider().getSetting();
+      if(karioki[0].conseal ==1){
+        DBProvider().updateSetting(Settingkun(id: karioki[0].id, lock: karioki[0].lock,emph: karioki[0].emph, status: karioki[0].status, conseal: 0, display1: karioki[0].display1, display2: karioki[0].display2, display3: karioki[0].display3, display4: karioki[0].display4, display5: karioki[0].display5, date: karioki[0].date));
+      }else{
+        DBProvider().updateSetting(Settingkun(id: karioki[0].id, lock: karioki[0].lock,emph: karioki[0].emph, status: karioki[0].status, conseal: 1, display1: karioki[0].display1, display2: karioki[0].display2, display3: karioki[0].display3, display4: karioki[0].display4, display5: karioki[0].display5, date: karioki[0].date));
+      }
+    }
+    display1() async {
+      var karioki = await DBProvider().getSetting();
+      if(karioki[0].display1 ==1){
+        DBProvider().updateSetting(Settingkun(id: karioki[0].id, lock: karioki[0].lock,emph: karioki[0].emph, status: karioki[0].status, conseal: karioki[0].conseal, display1: 0, display2: karioki[0].display2, display3: karioki[0].display3, display4: karioki[0].display4, display5: karioki[0].display5, date: karioki[0].date));
+      }else{
+        DBProvider().updateSetting(Settingkun(id: karioki[0].id, lock: karioki[0].lock,emph: karioki[0].emph, status: karioki[0].status, conseal: karioki[0].conseal, display1: 1, display2: karioki[0].display2, display3: karioki[0].display3, display4: karioki[0].display4, display5: karioki[0].display5, date: karioki[0].date));
+      }
+    }
+  display2() async {
+    var karioki = await DBProvider().getSetting();
+    if(karioki[0].display2 ==1){
+      DBProvider().updateSetting(Settingkun(id: karioki[0].id, lock: karioki[0].lock,emph: karioki[0].emph, status: karioki[0].status, conseal: karioki[0].conseal, display1: karioki[0].display1, display2: 0, display3: karioki[0].display3, display4: karioki[0].display4, display5: karioki[0].display5, date: karioki[0].date));
+    }else{
+      DBProvider().updateSetting(Settingkun(id: karioki[0].id, lock: karioki[0].lock,emph: karioki[0].emph, status: karioki[0].status, conseal: karioki[0].conseal, display1: karioki[0].display1, display2: 1, display3: karioki[0].display3, display4: karioki[0].display4, display5: karioki[0].display5, date: karioki[0].date));
+    }
+  }
+  display3() async {
+    var karioki = await DBProvider().getSetting();
+    if(karioki[0].display3 ==1){
+      DBProvider().updateSetting(Settingkun(id: karioki[0].id, lock: karioki[0].lock,emph: karioki[0].emph, status: karioki[0].status, conseal: karioki[0].conseal, display1: karioki[0].display1, display2: karioki[0].display2, display3: 0, display4: karioki[0].display4, display5: karioki[0].display5, date: karioki[0].date));
+    }else{
+      DBProvider().updateSetting(Settingkun(id: karioki[0].id, lock: karioki[0].lock,emph: karioki[0].emph, status: karioki[0].status, conseal: karioki[0].conseal, display1: karioki[0].display1, display2: karioki[0].display2, display3: 1, display4: karioki[0].display4, display5: karioki[0].display5, date: karioki[0].date));
+    }
+  }
+  display4() async {
+    var karioki = await DBProvider().getSetting();
+    if(karioki[0].display4 ==1){
+      DBProvider().updateSetting(Settingkun(id: karioki[0].id, lock: karioki[0].lock,emph: karioki[0].emph, status: karioki[0].status, conseal: karioki[0].conseal, display1: karioki[0].display1, display2: karioki[0].display2, display3: karioki[0].display3, display4: 0, display5: karioki[0].display5, date: karioki[0].date));
+    }else{
+      DBProvider().updateSetting(Settingkun(id: karioki[0].id, lock: karioki[0].lock,emph: karioki[0].emph, status: karioki[0].status, conseal: karioki[0].conseal, display1: karioki[0].display1, display2: karioki[0].display2, display3: karioki[0].display3, display4: 1, display5: karioki[0].display5, date: karioki[0].date));
+    }
+  }
+  display5() async {
+    var karioki = await DBProvider().getSetting();
+    if(karioki[0].display5 ==1){
+      DBProvider().updateSetting(Settingkun(id: karioki[0].id, lock: karioki[0].lock,emph: karioki[0].emph, status: karioki[0].status, conseal: karioki[0].conseal, display1: karioki[0].display1, display2: karioki[0].display2, display3: karioki[0].display3, display4: karioki[0].display4, display5: 0, date: karioki[0].date));
+    }else{
+      DBProvider().updateSetting(Settingkun(id: karioki[0].id, lock: karioki[0].lock,emph: karioki[0].emph, status: karioki[0].status, conseal: karioki[0].conseal, display1: karioki[0].display1, display2: karioki[0].display2, display3: karioki[0].display3, display4: karioki[0].display4, display5: 1, date: karioki[0].date));
+    }
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +161,7 @@ class _SettingState extends State<Setting> {
                       value: applicationLock,
                       onChanged: (bool value) {
                         setState(() {
+                          lock();
                           applicationLock = value;
                         });
                       },
@@ -85,6 +185,7 @@ class _SettingState extends State<Setting> {
                       value: PWcolor,
                       onChanged: (bool value) {
                         setState(() {
+                          emphasize();
                           PWcolor = value;
                         });
                       },
@@ -107,6 +208,7 @@ class _SettingState extends State<Setting> {
                       value: statusbar,
                       onChanged: (bool value) {
                         setState(() {
+                          status();
                           statusbar = value;
                         });
                       },
@@ -129,6 +231,7 @@ class _SettingState extends State<Setting> {
                       value: PWconseal,
                       onChanged: (bool value) {
                         setState(() {
+                          conseal();
                           PWconseal = value;
                         });
                       },
@@ -161,6 +264,7 @@ class _SettingState extends State<Setting> {
                                         activeColor: Colors.lime.shade800,
                                         value: displayItem_tt, onChanged: (bool value) {
                                         setState(() {
+                                          display1();
                                           displayItem_tt = value;
                                         });
                                       },),
@@ -173,6 +277,7 @@ class _SettingState extends State<Setting> {
                                         activeColor: Colors.lime.shade800,
                                         value: displayItem_em, onChanged: (bool value) {
                                         setState(() {
+                                          display2();
                                           displayItem_em = value;
                                         });
                                       },),
@@ -189,6 +294,7 @@ class _SettingState extends State<Setting> {
                                   activeColor: Colors.lime.shade800,
                                   value: displayItem_pw, onChanged: (bool value) {
                                   setState(() {
+                                    display3();
                                     displayItem_pw = value;
                                   });
                                 },),
@@ -200,6 +306,7 @@ class _SettingState extends State<Setting> {
                                       activeColor: Colors.lime.shade800,
                                       value: displayItem_ur, onChanged: (bool value) {
                                       setState(() {
+                                        display4();
                                         displayItem_ur = value;
                                       });
                                     },),
@@ -211,6 +318,7 @@ class _SettingState extends State<Setting> {
                                       activeColor: Colors.lime.shade800,
                                       value: displayItem_mm, onChanged: (bool value) {
                                       setState(() {
+                                        display5();
                                         displayItem_mm = value;
                                       });
                                     },),
