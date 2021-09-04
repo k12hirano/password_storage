@@ -9,6 +9,7 @@ class Itemkun {
   String url;
   String memo;
   int favorite;
+  int memostyle;
   String date;
 
 
@@ -32,6 +33,7 @@ class Itemkun {
     this.url,
     this.memo,
     this.favorite,
+    this.memostyle,
     this.date
   });
 
@@ -44,6 +46,7 @@ class Itemkun {
       'url': url,
       'memo': memo,
       'favorite': favorite,
+      'memostyle': memostyle,
       'date': date
     };
   }

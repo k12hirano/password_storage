@@ -10,7 +10,7 @@ class ItemkunRepository{
   String table = 'ItemList';
 
   Future<Itemkun> create(String title, String email, String pass, String url,
-      String memo) async{
+      String memo, int memostyle) async{
     DateTime now = DateTime.now();
     final Map<String, dynamic> row ={
       'title' :title,
@@ -19,9 +19,10 @@ class ItemkunRepository{
       'url' :url,
       'memo' :memo,
       'favorite' : 0,
+      'memostyle' : memostyle,
       'date' :now.toString()
     };
-    final Itemkun _itemkun = Itemkun(id:null, title: title, email: email, pass: pass, url: url, memo: memo, favorite: 0 ,date: now.toString());
+    final Itemkun _itemkun = Itemkun(id:null, title: title, email: email, pass: pass, url: url, memo: memo, favorite: 0 ,memostyle: memostyle ,date: now.toString());
     //final db = await instance.database;
     final db = await itemdatabase;
     //final id = await db.insert(table, row);
@@ -35,6 +36,7 @@ class ItemkunRepository{
         url: row['url'],
         memo: row['memo'],
         favorite: row['favorite'],
+        memostyle: row['memostyle'],
         date: now.toString(),);
   }
 

@@ -10,10 +10,8 @@ import 'package:password_storage/root.dart';
 class Item extends StatefulWidget {
   final argumentmode;
   final id;
-  //final _itemkunReository;
   Item(this.argumentmode,
       this.id,
-  //this._itemkunReository
       );
 
   @override
@@ -48,7 +46,7 @@ class _ItemState extends State<Item> {
     if(widget.argumentmode == 1){
       setState(() {
         getdata(widget.id);
-      });print(widget.id);}else{}
+      });}else{}
     super.initState();
   }
 
@@ -84,55 +82,67 @@ class _ItemState extends State<Item> {
         favo=true;
       }
     });
-    print('getdataした');
-    print(id);
-    print(titletext0);
-    print(forEdit[0].title);
   }
 
   void insertdesu() async {
-    print('start');
-    print(titletext.text);
-    print(emailtext.text);
-    print(passtext.text);
-    print(urltext.text);
-    print(memotext.text);
-    print('goal');
-    return await  ItemkunRepository(DBProvider()).tukkomu(Itemkun(title: titletext.text,email:emailtext.text ,pass:passtext.text ,url:urltext.text ,memo:memotext.text,favorite: 0, date: DateTime.now().toString()));
-
-    //titletext0.clear();
-    //emailtext0.clear();
-    //passtext0.clear();
-    //urltext0.clear();
-    //memotext0.clear();
+    if(memostyle==false){
+    return await  DBProvider().tukkomu(Itemkun(title: titletext.text,email:emailtext.text ,pass:passtext.text ,url:urltext.text ,memo:memotext.text,favorite: 0, memostyle: 0, date: DateTime.now().toString()));}else{
+      return await  DBProvider().tukkomu(Itemkun(title: titletext.text,email:emailtext.text ,pass:passtext.text ,url:urltext.text ,memo:memotext.text,favorite: 0, memostyle: 1, date: DateTime.now().toString()));
+    }
   }
 
   void updatedesu() async {
     //TODO favorite adjust
-    if(favo=false) {
-      return await ItemkunRepository(DBProvider()).update(Itemkun(
+    if(favo=false) {if(memostyle==false){
+      return await DBProvider().update(Itemkun(
+          id: widget.id,
           title: titletext0.text,
           email: emailtext0.text,
           pass: passtext0.text,
           url: urltext0.text,
           memo: memotext0.text,
           favorite: 0,
+          memostyle: 0,
+          date: DateTime.now().toString()), widget.id);}else{
+      return await DBProvider().update(Itemkun(
+          id: widget.id,
+          title: titletext0.text,
+          email: emailtext0.text,
+          pass: passtext0.text,
+          url: urltext0.text,
+          memo: memotext0.text,
+          favorite: 0,
+          memostyle: 1,
           date: DateTime.now().toString()), widget.id);
-    }else{
-      return await ItemkunRepository(DBProvider()).update(Itemkun(
+    }
+    }else{if(memostyle==false){
+      return await DBProvider().update(Itemkun(
+          id: widget.id,
           title: titletext0.text,
           email: emailtext0.text,
           pass: passtext0.text,
           url: urltext0.text,
           memo: memotext0.text,
           favorite: 1,
+          memostyle: 0,
+          date: DateTime.now().toString()), widget.id);}else{
+      return await DBProvider().update(Itemkun(
+          id: widget.id,
+          title: titletext0.text,
+          email: emailtext0.text,
+          pass: passtext0.text,
+          url: urltext0.text,
+          memo: memotext0.text,
+          favorite: 1,
+          memostyle: 1,
           date: DateTime.now().toString()), widget.id);
+    }
     }
     }
 
   favoriteOnOff() async{
     List<Itemkun> dataget = await DBProvider().select(widget.id);
-    DBProvider().update(Itemkun(id: widget.id, title: dataget[0].title, email: dataget[0].email, pass: dataget[0].pass, url: dataget[0].url, memo: dataget[0].memo, favorite: 1, date: dataget[0].date), widget.id);
+    DBProvider().update(Itemkun(id: widget.id, title: dataget[0].title, email: dataget[0].email, pass: dataget[0].pass, url: dataget[0].url, memo: dataget[0].memo, favorite: 1, memostyle: dataget[0].memostyle, date: dataget[0].date), widget.id);
     setState(() {
       if(favo){
         favo=false;
@@ -459,7 +469,7 @@ class _ItemState extends State<Item> {
                   keyboardType: TextInputType.multiline,
                   maxLines: 100,
                   style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 18,
                       height: 2.0,
                       color: Colors.brown
                   )),),
