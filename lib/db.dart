@@ -48,7 +48,7 @@ class DBProvider {
 
      await db.execute('CREATE TABLE item(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, email TEXT, pass TEXT, url TEXT, memo TEXT,favorite INTEGER, memostyle INTEGER, date TEXT)');
 
-     await db.execute('CREATE TABLE setting(id INTEGER PRIMARY KEY, lock INTEGER, emph INTEGER, status INTEGER, conseal INTEGER, display1 INTEGER DEFAULT 1, display2 INTEGER DEFAULT 1, display3 INTEGER DEFAULT 1, display4 INTEGER DEFAULT 1, display5 INTEGER DEFAULT 1, date TEXT)');
+   //  await db.execute('CREATE TABLE setting(id INTEGER PRIMARY KEY, lock INTEGER, emph INTEGER, status INTEGER, conseal INTEGER, display1 INTEGER DEFAULT 1, display2 INTEGER DEFAULT 1, display3 INTEGER DEFAULT 1, display4 INTEGER DEFAULT 1, display5 INTEGER DEFAULT 1, date TEXT)');
 
      //insertSetting(Settingkun(id: 1,lock: 0, emph: 0, status: 0, conseal: 0, display1: 1, display2: 1, display3: 1, display4: 1, display5: 1));
   }

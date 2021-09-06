@@ -49,6 +49,7 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
   //int displayInt5 =1;
   double displayHeight = 5.0;
   bool unlock = false;
+  bool appoffState;
 
 
   bool favoriteOnly=false;
@@ -61,6 +62,10 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
 
 
   _RootState() {
+    checkOff();
+  if(appoffState==true){
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>Lock()));
+  }
     WidgetsBinding.instance.addObserver(this);
     getPassonff();
     print('start');
@@ -73,21 +78,49 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
   @override
   void dispose() {
     // StreamControllerは必ず開放する
+    appOff();
+    /*Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => Lock()));*/
     _ItemsChange.close();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  appOff() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('appoff', true);
+    print('appoff');
+  }
+
+  checkOff() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    appoffState = prefs.getBool('appoff');
+    print(appoffState);
+    print('appstate');
   }
 
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.inactive && lock == true) {
       Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => Lock()));
-    }else if(state == AppLifecycleState.paused) {
+          context,
+          MaterialPageRoute(
+              builder: (context) => Lock()));
+    }else if(state == AppLifecycleState.paused && lock==true) {
 
-    }else if(state == AppLifecycleState.resumed) {
+    }else if(state == AppLifecycleState.resumed && lock ==true) {
+      /*Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Lock()));*/
+    }else if(state == AppLifecycleState.detached && lock == true) {
+      appOff();
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Lock()));
     }
   }
 
@@ -323,7 +356,7 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
       backgroundColor: Colors.cyan[100],
       appBar: AppBar(
         elevation: 8,
-        leading:IconButton(
+        leading:(deleteon==false)?IconButton(
           icon:Icon(Icons.settings)
           ,onPressed:() {
           Navigator.push(
@@ -332,7 +365,7 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
           ).then((value) => setState(() {
             streamIn();
           }));
-        },),
+        },):Container(),
         centerTitle: true,
         title:Text("PASSWORDLIST",style: TextStyle(color: Colors.yellow[200]),),
         backgroundColor: Colors.brown[800],
@@ -788,14 +821,15 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                             //crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Container(
+                                //padding: EdgeInsets.fromLTRB(4, height*0.012, 4, 4),
                                   child:
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
-                                      SizedBox(height:height*0.005),
+                                      SizedBox(height:height*0.016),
                                       Container(
-                                          height: height*0.014+height*0.03*displayHeight,
+                                          height: height*0.013+height*0.02*displayHeight,
                                           width: width*0.7,
                                           alignment: Alignment.topLeft,
                                           // child:
@@ -973,7 +1007,7 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                                     (display2 == true)?Container(
                                                         height: height*0.025*0.8,
                                                         child: Row(children:<Widget>[Text(
-                                                          'Email:'
+                                                          ' Email:'
                                                               +itemkun.email,
                                                           style: TextStyle(fontSize:fontsize*adjustsizeh*0.7, color: Colors.black54),),
                                                           (itemkun.email.length != 0) ?IconButton(icon: Icon(Icons.copy,size: iconsize*adjustsizeh*0.7,), onPressed:(){
@@ -991,10 +1025,10 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                                         MainAxisAlignment.start,
                                                         children: <Widget>[
                                                           Container(
-                                                            child: Text("PASSWORD:",
+                                                            child: Text(" PASSWORD:",
                                                                 textAlign: TextAlign.center,
                                                                 style: TextStyle(
-                                                                    fontSize: fontsize*adjustsizeh,
+                                                                    fontSize: fontsize*adjustsizeh*0.7,
                                                                     fontWeight: FontWeight.w600,
                                                                     color: Colors.black54)),
                                                           ),
@@ -1003,7 +1037,7 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                                               style: TextStyle(
                                                                   fontSize: 16*adjustsizeh*0.7,
                                                                   fontWeight: FontWeight.bold,
-                                                                  color: Colors.blue),
+                                                                  color: (conseal==false)?Colors.black54:Colors.blue),
                                                             ),
                                                           ),
                                                           (itemkun.pass.length != 0) ?IconButton(icon: Icon(Icons.copy,size: iconsize*adjustsizeh*0.7,),onPressed: (){
@@ -1020,9 +1054,9 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                                         width: width*0.65*0.7,
                                                         child:Row(children: <Widget>[
                                                           Flexible(
-                                                          child:Text(itemkun.url,
+                                                          child:Text(' '+itemkun.url,
                                                             style: TextStyle(
-                                                              fontSize: 16*adjustsizeh,
+                                                              fontSize: 16*adjustsizeh*0.7,
                                                               color: Colors.brown[800],
                                                             ),
                                                             overflow: TextOverflow.ellipsis,
@@ -1045,7 +1079,7 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                                         // Container(
                                                         child: Row(children: <Widget>
                                                         [Flexible(
-                                                          child:Text(itemkun.memo,
+                                                          child:Text(' '+itemkun.memo,
                                                             style: TextStyle(
                                                               fontSize: 16*adjustsizeh*0.7,
                                                               color: Colors.brown[800],

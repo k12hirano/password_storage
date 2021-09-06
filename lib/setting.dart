@@ -10,6 +10,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Setting extends StatefulWidget {
 
+  method() {
+    _SettingState().initSetting();
+  }
+
   @override
   _SettingState createState() => _SettingState();
 }
@@ -31,6 +35,7 @@ class _SettingState extends State<Setting> {
 
   _SettingState(){
     //TODO
+    //applicationLock=false;
     print('construtor,setting');
     initSetting();
   }
@@ -38,11 +43,12 @@ class _SettingState extends State<Setting> {
 
   initSetting() async {
     print('initsetting');
-    //getPassonoff();
 
     SharedPreferences prefs= await SharedPreferences.getInstance();
+
     setState(() {
       applicationLock=prefs.getBool('lockonoff') ?? false;
+      print(applicationLock);
       statusbar=prefs.getBool('status') ?? false;
       PWconseal=prefs.getBool('conseal') ?? false;
       PWcolor=prefs.getBool('emphasize') ?? false;
@@ -52,6 +58,7 @@ class _SettingState extends State<Setting> {
       displayItem_ur=prefs.getBool('display4') ?? true;
       displayItem_mm=prefs.getBool('display5') ?? true;
     });
+
 
 
 
@@ -77,14 +84,21 @@ class _SettingState extends State<Setting> {
   }
 
   lock(bool value) async {
+    if(applicationLock==false){
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool("lockonoff", value);
+    print(value);
+    prefs.setBool('lockonoff', false);
+    }
+    //await prefs.setBool("lockonoff", value);
 
     if(applicationLock==true){
-      Navigator.pushReplacement(
+      Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => LockSetting(0, null)));
+              builder: (context) => LockSetting(0, null))).then((value) => setState(() {
+        initSetting();
+        print('heke');
+      }));
 
 
 
@@ -130,7 +144,7 @@ class _SettingState extends State<Setting> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('emphasize', value);
     }
-  emphasize() async {
+    emphasize() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if(prefs.getBool('emphasize')){
       setEmphasize(false);
@@ -295,6 +309,7 @@ class _SettingState extends State<Setting> {
         ],
       ),
       body: Center(
+          child:SingleChildScrollView(
           child: Container(
             decoration: BoxDecoration(
               //この行を追加
@@ -509,7 +524,7 @@ class _SettingState extends State<Setting> {
                     onPressed: (){},)),
                 ]),)
                     :Container(height: height*0.1,)
-              ],),)
+              ],),))
       ),
     );
   }

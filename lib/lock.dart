@@ -36,7 +36,7 @@ class _LockState extends State<Lock>
   List<BiometricType> _availableBiometrics;
   String _authorized = 'Not Authorized';
   bool _isAuthenticating = false;
-  bool questionOr = false;
+  bool questionOr;
 
   _LockState(){
    // WidgetsBinding.instance.addObserver(this);
@@ -44,6 +44,8 @@ class _LockState extends State<Lock>
     getPass();
     //getAuth();
     _authenticate();
+    print('hop');
+    print('questionor'+questionOr.toString());
   }
 
   @override
@@ -70,12 +72,23 @@ class _LockState extends State<Lock>
 
    getQuestionpass() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if(prefs.getBool('questionpass')==null){
+    var or = prefs.getBool('questionpass');
+    if(or==null){
       prefs.setBool('questionpass', false);
-      questionOr = false;
+      setState(() {
+        questionOr = false;print('北');
+      });
     }else {
-      questionOr = prefs.getBool('questionpass');
+      setState(() {
+        questionOr = prefs.getBool('questionpass');print('南');
+      });
+
     }
+  }
+
+  appOn() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('appoff',false);
   }
 
   Future<List<BiometricType>> _getAvailableBiometrics() async {
@@ -105,7 +118,6 @@ class _LockState extends State<Lock>
     }
   }
 
-
     _onPasscodeEntered(String enteredPasscode) async {
       bool isValid = passcode == enteredPasscode;
       _verificationNotifier.add(isValid);
@@ -113,6 +125,7 @@ class _LockState extends State<Lock>
         setState(() {
           this.isAuthenticated = isValid;
         });
+        appOn();
         //Navigator.pop(context);
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Root()));
       } else {
@@ -138,9 +151,10 @@ class _LockState extends State<Lock>
                   width: width*0.5,
                   alignment: Alignment.center,
                   child: Text('Wrong Password!',style: TextStyle(fontSize: 24*adjustsizeh,),),),
+                SizedBox(height: height*0.05,),
                 Container(
-                  height: height*0.1,
-                  width: width*0.45,
+                  height: height*0.07,
+                  width: width*0.25,
                   child: ElevatedButton(
                       onPressed: (){Navigator.pop(context);},
                       style: ElevatedButton.styleFrom(
@@ -169,7 +183,9 @@ class _LockState extends State<Lock>
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final adjustsizeh = MediaQuery.of(context).size.height * 0.0011;
-    return WillPopScope(child: (questionOr==false)?PasscodeScreen(
+    return Scaffold(
+        backgroundColor: Colors.amber[200],
+        body:WillPopScope(child: (questionOr==false)?PasscodeScreen(
         title: Text('Enter Passcode',textAlign: TextAlign.center,style: TextStyle(fontSize: 30*adjustsizeh),),
         cancelButton: Text('cancel'), deleteButton: Text('delete'),
         circleUIConfig: CircleUIConfig(
@@ -183,8 +199,11 @@ class _LockState extends State<Lock>
         //cancelCallback: _onPasscodeCancelled,
         //digits: digits,
         passwordDigits: 4, shouldTriggerVerification: _verificationNotifier.stream)
-        :Center(child: Container(child:Column(children:<Widget> [
-          Container(height: height*0.15,width: width*0.7,child: Text(question, style: TextStyle(fontSize: 28*adjustsizeh),),),
+        :Center(child: SingleChildScrollView(child:Container(child:Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children:<Widget> [
+          Container(height: height*0.2,width: width*0.7,child: Text(question, style: TextStyle(fontSize: 26*adjustsizeh),),),
           Container(height: height*0.15,width: width*0.7,child: TextFormField( decoration: InputDecoration(
               labelText: 'answer'),
               controller: passtext,
@@ -196,12 +215,14 @@ class _LockState extends State<Lock>
                   height: 2*adjustsizeh,
                   color: Colors.brown
               ))),
-          Container(height: height*0.15,width: width*0.7,child: ElevatedButton(
+          SizedBox(height: height*0.1,),
+          Container(height: height*0.08,width: width*0.6,child: ElevatedButton(
             onPressed: (){
               if(passtext.text==answer){
                 setState(() {
                   this.isAuthenticated = true;
                 });
+                appOn();
                 Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>Root()));
               }else {
                 errorPassword();
@@ -211,6 +232,6 @@ class _LockState extends State<Lock>
                 primary: Colors.brown[700]
             ),
             child: Text('OK',style: TextStyle(fontSize: 25*adjustsizeh,color: Colors.amber[200]),),),)
-    ],)),), onWillPop:() async => false);
+    ],)),)), onWillPop:() async => false));
   }
 }
