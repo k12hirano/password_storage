@@ -73,9 +73,7 @@ class _LockState extends State<Lock> /* with WidgetsBindingObserver*/ {
         appOn();
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Root()));
       } else {
-        setState(() {
-          return Text("Wrong passcode");
-        });
+        errorPassword();
       }
     }
 
@@ -97,14 +95,14 @@ class _LockState extends State<Lock> /* with WidgetsBindingObserver*/ {
                   child: Text('Wrong Password!',style: TextStyle(fontSize: 24*adjustsizeh))),
                 SizedBox(height: height*0.05,),
                 Container(
-                  height: height*0.07,
-                  width: width*0.25,
+                  height: height*0.05,
+                  width: width*0.3,
                   child: ElevatedButton(
                       onPressed: (){Navigator.pop(context);},
                       style: ElevatedButton.styleFrom(
                           primary: Colors.brown[700]
                       ),
-                      child: Text('OK',style: TextStyle(fontSize: 20*adjustsizeh,color: Colors.amber[200]),)),)
+                      child: Text('OK',style: TextStyle(fontSize: 20*adjustsizeh,color: Colors.amber[200]))))
               ]))
       );
     });
@@ -139,7 +137,7 @@ class _LockState extends State<Lock> /* with WidgetsBindingObserver*/ {
             circleSize: 30),
         backgroundColor: Colors.amber[200],
         keyboardUIConfig: KeyboardUIConfig(digitBorderWidth: 2, digitTextStyle: TextStyle(fontSize:30*adjustsizeh, color: Colors.brown[700]),
-            deleteButtonTextStyle: TextStyle(fontSize: 15), primaryColor: Colors.brown[800]),
+            deleteButtonTextStyle: TextStyle(fontSize: 15*adjustsizeh), primaryColor: Colors.brown[800]),
         passwordEnteredCallback: _onPasscodeEntered,
         //cancelCallback: _onPasscodeCancelled,
         passwordDigits: 4, shouldTriggerVerification: _verificationNotifier.stream)
@@ -147,7 +145,7 @@ class _LockState extends State<Lock> /* with WidgetsBindingObserver*/ {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children:<Widget> [
-          Container(height: height*0.2,width: width*0.7,child: Text(question, style: TextStyle(fontSize: 26*adjustsizeh),),),
+          Container(height: height*0.2,width: width*0.7,child: Text(question, style: TextStyle(fontSize: 26*adjustsizeh))),
           Container(height: height*0.15,width: width*0.7,child: TextFormField( decoration: InputDecoration(
               labelText: 'answer'),
               controller: passtext,

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:password_storage/Itemkun.dart';
 import 'package:password_storage/db.dart';
+import 'package:password_storage/detail.dart';
 import 'package:password_storage/item.dart';
 import 'package:password_storage/lock.dart';
 import 'package:password_storage/setting.dart';
@@ -43,8 +43,10 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
   Color fontcolor = Colors.brown[800];
   List<String> consealpassList=[];
   List<bool> deleteCheckList =[];
+  List<String> deleteValueStorage = [];
   var searchtext = TextEditingController();
   // ignore: non_constant_identifier_names
+  StreamController<List<Item>> _streamController;
   final _ItemsChange = StreamController();
   final favorite = Set<int>();
   final deleteValueList = Set<String>();
@@ -70,14 +72,15 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
         context,
         MaterialPageRoute(
             builder: (context) => Lock()));*/
+    _streamController.close();
     _ItemsChange.close();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   streamIn() async{
-    _streamController = StreamController<List<Itemkun>>();
-    List<Itemkun> karioki=[];
+    //_streamController = StreamController<List<Item>>();
+    List<Item> karioki=[];
     if(favoriteOnly==false){
       if(choice==1 || choice==null){
         karioki = await DBProvider().search(null);}
@@ -106,6 +109,13 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
     }
     for(var i=0;i<karioki.length;i++){
       deleteCheckList.add(false);
+    }
+    if(deleteValueStorage.length != 0){
+      deleteValueStorage.removeRange(0, deleteValueStorage.length);
+    }
+    if(deleteValueList.isNotEmpty){deleteValueList.clear();}
+    for(var i=0;i<karioki.length;i++){
+      deleteValueStorage.add(karioki[i].id.toString());
     }
     SettingInit();
 
@@ -164,7 +174,7 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
     }
   }
 
-  StreamController<List<Itemkun>> _streamController;
+
   set(String name){
     _value = name;
   }
@@ -206,7 +216,7 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
   }
 
   onchanging(String keyword) async {
-    List<Itemkun> karioki0 = [];
+    List<Item> karioki0 = [];
     if(favoriteOnly==false){
       if(choice==1 || choice==null){
         karioki0 = await DBProvider().search(keyword);
@@ -361,7 +371,7 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) =>
-                Item(
+                Detail(
                     0,
                     null
                 )),
@@ -411,16 +421,16 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index){
                   final itemlist00 = snapshot.data;
-                  final itemkun = itemlist00[index];
-                  final favoriteCheck = favorite.contains(itemkun.id);
-                  return (itemkun.memostyle==0)?InkWell(
+                  final item = itemlist00[index];
+                  final favoriteCheck = favorite.contains(item.id);
+                  return (item.memostyle==0)?InkWell(
                     borderRadius: BorderRadius.circular(20),
                     onTap: () {
                       Navigator.push(
                         context,
-                          MaterialPageRoute(builder: (context) =>Item(
+                          MaterialPageRoute(builder: (context) =>Detail(
                           1,
-                          itemkun.id
+                          item.id
                         )),
                       ).then((value) => setState(() {
                         streamIn();
@@ -428,13 +438,15 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                     },
                     onLongPress: () async {
                       var dialog = await showDialog(context: context, builder: (BuildContext context){
-                        return SimpleDialog(children: <Widget>[
+                        return SimpleDialog(
+                            backgroundColor: Colors.amber[200],
+                            children: <Widget>[
                           SimpleDialogOption(onPressed: (){
-                            Navigator.push(
+                            Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (context) =>Item(
+                              MaterialPageRoute(builder: (context) =>Detail(
                                   1,
-                                  itemkun.id
+                                  item.id
                               )),
                             ).then((value) => setState(() {
                               streamIn();
@@ -449,17 +461,21 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                         color: Colors.brown[800],
                         width:1,
                         )),
-                            child:Text('edit',style: TextStyle(fontSize: 22, color: Colors.yellow[200])))),
+                            child:Text('edit',style: TextStyle(fontSize: 22*adjustsizeh, color: Colors.yellow[200])))),
                           SimpleDialogOption(onPressed: (){
                             DBProvider().insert(
-                                Itemkun(
-                                    title: itemkun.title,
-                                    email: itemkun.email,
-                                    pass: itemkun.pass,
-                                    url: itemkun.url,
-                                    memo: itemkun.memo,
-                                    memostyle: itemkun.memostyle,
+                                Item(
+                                    title: item.title,
+                                    email: item.email,
+                                    pass: item.pass,
+                                    url: item.url,
+                                    memo: item.memo,
+                                    favorite: item.favorite,
+                                    memostyle: item.memostyle,
                                     date: DateTime.now().toString()));
+                            setState(() {
+                              streamIn();
+                            });
                             Navigator.pop(context);
                           },child: Container(
                         height:height*0.05,
@@ -471,9 +487,9 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                   color: Colors.brown[800],
                                   width:1,
                                 )),
-                        child:Text('copy', style: TextStyle(fontSize: 22, color: Colors.yellow[200]),),)),
+                        child:Text('copy', style: TextStyle(fontSize: 22*adjustsizeh, color: Colors.yellow[200]),),)),
                           SimpleDialogOption(onPressed: (){
-                            DBProvider().delete(itemkun.id);
+                            DBProvider().delete(item.id);
                             Navigator.pop(context);
                             setState(() {
                                streamIn();
@@ -488,7 +504,7 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                   color: Colors.brown[800],
                                   width:1,
                                 )),
-                        child:Text('delete', style: TextStyle(fontSize: 22, color: Colors.yellow[200]))))
+                        child:Text('delete', style: TextStyle(fontSize: 22*adjustsizeh, color: Colors.yellow[200]))))
                         ]);
                       });
                     },
@@ -515,20 +531,20 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                               )
                                           )),
                                           height: height*0.03,
-                                          child:Row(children:<Widget>[SizedBox(width: width*0.05,),Text(itemkun.title,
-                                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black54, fontSize: 16*adjustsizeh),
+                                          child:Row(children:<Widget>[SizedBox(width: width*0.05,),Text(item.title,
+                                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black54, fontSize: fontsize*adjustsizeh),
                                           )])):Container(),
                                       (display2 == true)?Container(
                                           height: height*0.025,
                                           child: Row(children:<Widget>[Text(
                                             'ID/Email: '
-                                                +itemkun.email,
+                                                +item.email,
                                             style: TextStyle(fontSize:fontsize*adjustsizeh, color: Colors.black54, fontWeight: FontWeight.w600)),
-                                            (itemkun.email.length != 0) ?IconButton(icon: Icon(Icons.copy,size: iconsize*adjustsizeh,),
+                                            (item.email.length != 0) ?IconButton(icon: Icon(Icons.copy,size: iconsize*adjustsizeh,),
                                                 onPressed:(){
-                                              if(itemkun.email.length != 0){
+                                              if(item.email.length != 0){
                                               ClipboardManager.copyToClipBoard(
-                                                  itemkun.email);}
+                                                  item.email);}
                                             })
                                                 :Container(),
                                           ])):Container(),
@@ -548,22 +564,22 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                                       color: Colors.black54)),
                                             ),
                                             Container(
-                                              child:(conseal==false)?Text(itemkun.pass,
+                                              child:(conseal==false)?Text(item.pass,
                                                 style: TextStyle(
-                                                    fontSize: 16*adjustsizeh,
+                                                    fontSize: fontsize*adjustsizeh,
                                                     fontWeight: FontWeight.bold,
                                                     color:(emphasis == true)? Colors.blue :Colors.black54),
                                               ):Text('********',
                                                 style: TextStyle(
-                                                    fontSize: 16*adjustsizeh,
+                                                    fontSize: fontsize*adjustsizeh,
                                                     fontWeight: FontWeight.bold,
                                                     color:(emphasis == true)? Colors.blue :Colors.black54)),
                                             ),
-                                            (itemkun.pass.length != 0) ?IconButton(icon: Icon(Icons.copy,size: iconsize*adjustsizeh),
+                                            (item.pass.length != 0) ?IconButton(icon: Icon(Icons.copy,size: iconsize*adjustsizeh),
                                               onPressed: (){
-                                              if(itemkun.pass.legth != 0){
+                                              if(item.pass.legth != 0){
                                                 ClipboardManager.copyToClipBoard(
-                                                    itemkun.pass);}
+                                                    item.pass);}
                                             },)
                                                 :Container(),
                                           ],
@@ -575,20 +591,20 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                           child:
                                           Row(children: <Widget>[
                                             Flexible(
-                                            child:Text(itemkun.url,
+                                            child:Text(item.url,
                                               style: TextStyle(
-                                                fontSize: 16*adjustsizeh,
+                                                fontSize: fontsize*adjustsizeh,
                                                 color: Colors.brown[800],
                                               ),
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 1,
                                             ),
                                           ),
-                                            (itemkun.url.length != 0)?IconButton(icon: Icon(Icons.copy, size: iconsize*adjustsizeh),
+                                            (item.url.length != 0)?IconButton(icon: Icon(Icons.copy, size: iconsize*adjustsizeh),
                                               onPressed: (){
-                                              if(itemkun.pass.legth != 0){
+                                              if(item.pass.legth != 0){
                                                 ClipboardManager.copyToClipBoard(
-                                                    itemkun.url);}
+                                                    item.url);}
                                             },)
                                                 :Container()
                                           ])):Container(),
@@ -598,7 +614,7 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                               child:Row(children:<Widget>[
                                                 SizedBox(width: width*0.03,),
                                               Flexible(
-                                                child:Text(itemkun.memo,
+                                                child:Text(item.memo,
                                                   style: TextStyle(
                                                     fontSize: 14*adjustsizeh,
                                                     color: Colors.brown[800],
@@ -622,35 +638,35 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                       onTap: () {
                                         if(favoriteCheck){
                                           DBProvider().update(
-                                              Itemkun(
-                                                  id: itemkun.id,
-                                                  title:itemkun.title,
-                                                  email:itemkun.email,
-                                                  pass: itemkun.pass,
-                                                  url: itemkun.url,
-                                                  memo: itemkun.memo,
+                                              Item(
+                                                  id: item.id,
+                                                  title:item.title,
+                                                  email:item.email,
+                                                  pass: item.pass,
+                                                  url: item.url,
+                                                  memo: item.memo,
                                                   favorite: 0,
-                                                  memostyle:itemkun.memostyle,
+                                                  memostyle:item.memostyle,
                                                   date: DateTime.now().toString()) ,
-                                              itemkun.id);
+                                              item.id);
                                           setState(() {
-                                            favorite.remove(itemkun.id);
+                                            favorite.remove(item.id);
                                           });
                                         }else{
                                           DBProvider().update(
-                                              Itemkun(
-                                                  id: itemkun.id,
-                                                  title:itemkun.title,
-                                                  email:itemkun.email,
-                                                  pass: itemkun.pass,
-                                                  url: itemkun.url,
-                                                  memo: itemkun.memo,
+                                              Item(
+                                                  id: item.id,
+                                                  title:item.title,
+                                                  email:item.email,
+                                                  pass: item.pass,
+                                                  url: item.url,
+                                                  memo: item.memo,
                                                   favorite: 1,
-                                                  memostyle: itemkun.memostyle,
+                                                  memostyle: item.memostyle,
                                                   date: DateTime.now().toString()),
-                                              itemkun.id);
+                                              item.id);
                                           setState(() {
-                                            favorite.add(itemkun.id);
+                                            favorite.add(item.id);
                                           });
                                         }
                                       },
@@ -668,9 +684,9 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                     onTap: () {
                        Navigator.push(
                         context,
-                       MaterialPageRoute(builder: (context) =>Item(
+                       MaterialPageRoute(builder: (context) =>Detail(
                          1,
-                        itemkun.id
+                        item.id
                        )),
                       ).then((value) => setState(() {
                        streamIn();
@@ -682,9 +698,9 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                           SimpleDialogOption(onPressed: (){
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) =>Item(
+                              MaterialPageRoute(builder: (context) =>Detail(
                                   1,
-                                  itemkun.id
+                                  item.id
                               )),
                             ).then((value) => setState(() {
                               streamIn();
@@ -699,16 +715,17 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                   color: Colors.brown[800],
                                   width:1,
                                 )),
-                            child:Text('edit',style: TextStyle(fontSize: 22, color: Colors.yellow[200])))),
+                            child:Text('edit',style: TextStyle(fontSize: 22*adjustsizeh, color: Colors.yellow[200])))),
                           SimpleDialogOption(onPressed: (){
                             DBProvider().insert(
-                                Itemkun(
-                                    title: itemkun.title,
-                                    email: itemkun.email,
-                                    pass: itemkun.pass,
-                                    url: itemkun.url,
-                                    memo: itemkun.memo,
-                                    memostyle: itemkun.memostyle,
+                                Item(
+                                    title: item.title,
+                                    email: item.email,
+                                    pass: item.pass,
+                                    url: item.url,
+                                    memo: item.memo,
+                                    memostyle: item.memostyle,
+                                    favorite: item.favorite,
                                     date: DateTime.now().toString()));
                             Navigator.pop(context);
                           },child: Container(
@@ -721,9 +738,9 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                   color: Colors.brown[800],
                                   width:1,
                                 )),
-                            child:Text('copy', style: TextStyle(fontSize: 22, color: Colors.yellow[200])))),
+                            child:Text('copy', style: TextStyle(fontSize: 22*adjustsizeh, color: Colors.yellow[200])))),
                           SimpleDialogOption(onPressed: (){
-                            DBProvider().delete(itemkun.id);
+                            DBProvider().delete(item.id);
                             Navigator.pop(context);
                             setState(() {
                               streamIn();
@@ -738,7 +755,7 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                   color: Colors.brown[800],
                                   width:1,
                                 )),
-                            child:Text('delete', style: TextStyle(fontSize: 22, color: Colors.yellow[200]))))
+                            child:Text('delete', style: TextStyle(fontSize: 22*adjustsizeh, color: Colors.yellow[200]))))
                         ],);
                       });
                     },
@@ -765,9 +782,9 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                               children:<Widget>[
                                             SizedBox(width: width*0.03,),
                                             Flexible(
-                                              child:Text(itemkun.memo,
+                                              child:Text(item.memo,
                                                 style: TextStyle(
-                                                  fontSize: 16*adjustsizeh,
+                                                  fontSize: fontsize*adjustsizeh,
                                                   color: Colors.brown[800],
                                                 ),
                                                 overflow: TextOverflow.ellipsis,
@@ -788,35 +805,35 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                       onTap: () {
                                         if(favoriteCheck){
                                           DBProvider().update(
-                                              Itemkun(
-                                                  id: itemkun.id,
-                                                  title:itemkun.title,
-                                                  email:itemkun.email,
-                                                  pass: itemkun.pass,
-                                                  url: itemkun.url,
-                                                  memo: itemkun.memo,
+                                              Item(
+                                                  id: item.id,
+                                                  title:item.title,
+                                                  email:item.email,
+                                                  pass: item.pass,
+                                                  url: item.url,
+                                                  memo: item.memo,
                                                   favorite: 0,
-                                                  memostyle:itemkun.memostyle,
+                                                  memostyle:item.memostyle,
                                                   date: DateTime.now().toString()),
-                                              itemkun.id);
+                                              item.id);
                                           setState(() {
-                                            favorite.remove(itemkun.id);
+                                            favorite.remove(item.id);
                                           });
                                         }else{
                                           DBProvider().update(
-                                              Itemkun(
-                                                  id: itemkun.id,
-                                                  title:itemkun.title,
-                                                  email:itemkun.email,
-                                                  pass: itemkun.pass,
-                                                  url: itemkun.url,
-                                                  memo: itemkun.memo,
+                                              Item(
+                                                  id: item.id,
+                                                  title:item.title,
+                                                  email:item.email,
+                                                  pass: item.pass,
+                                                  url: item.url,
+                                                  memo: item.memo,
                                                   favorite: 1,
-                                                  memostyle: itemkun.memostyle,
+                                                  memostyle: item.memostyle,
                                                   date: DateTime.now().toString()),
-                                              itemkun.id);
+                                              item.id);
                                           setState(() {
-                                            favorite.add(itemkun.id);
+                                            favorite.add(item.id);
                                           });
                                         }
                                       },
@@ -855,6 +872,12 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                       for(var i=0;i<deleteCheckList.length;i++){
                         deleteCheckList[i]=true;
                       }
+                     if(deleteValueStorage.isNotEmpty){
+                       for(var i=0;i<deleteValueStorage.length;i++){
+                         deleteValueList.add(deleteValueStorage[i]);
+                       }
+                       print(deleteValueStorage);
+                     }
                     });
                   }, child: Text('all check', style: TextStyle(color: Colors.yellow[200])),
                       style: ElevatedButton.styleFrom(
@@ -866,6 +889,7 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                       for(var i=0;i<deleteCheckList.length;i++){
                         deleteCheckList[i]=false;
                       }
+                      deleteValueList.clear();
                     });
                   }, child: Text('all clear',style: TextStyle(color: Colors.yellow[200])),
                     style: ElevatedButton.styleFrom(
@@ -885,7 +909,7 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                               itemCount: snapshot.data.length,
                               itemBuilder: (BuildContext context, int index){
                                 final itemlist00 = snapshot.data;
-                                final itemkun = itemlist00[index];
+                                final item = itemlist00[index];
                                 return Container(child:Row(children:<Widget>[
                                   Container(
                                     height:height*0.15*0.7,
@@ -897,20 +921,20 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                         setState(() {
                                           if(value) {
                                             deleteCheckList[index] = value;
-                                            if(deleteValueList.contains(itemkun.id.toString())==false){
-                                            deleteValueList.add(itemkun.id.toString());
+                                            if(deleteValueList.contains(item.id.toString())==false){
+                                            deleteValueList.add(item.id.toString());
                                             }
                                           }
                                          else{
                                             deleteCheckList[index] = value;
-                                            if(deleteValueList.contains(itemkun.id.toString())){
-                                            deleteValueList.remove(itemkun.id.toString());
+                                            if(deleteValueList.contains(item.id.toString())){
+                                            deleteValueList.remove(item.id.toString());
                                             }
                                           }
                                         });
                                       },
                                     )),
-                                  (itemkun.memostyle==0)?InkWell(
+                                  (item.memostyle==0)?InkWell(
                                   borderRadius: BorderRadius.circular(20),
                                   onTap: () {
                                   },
@@ -939,19 +963,19 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                                             )),
                                                         height: height*0.03*0.7,
                                                         child:Row(children:<Widget>[SizedBox(width: width*0.05*0.7,),
-                                                          Text(itemkun.title,
-                                                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black54, fontSize: 16*adjustsizeh*0.7),
+                                                          Text(item.title,
+                                                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black54, fontSize: fontsize*adjustsizeh*0.7),
                                                         )])):Container(),
                                                     (display2 == true)?Container(
                                                         height: height*0.025*0.8,
                                                         child: Row(children:<Widget>[Text(
                                                           ' Email:'
-                                                              +itemkun.email,
+                                                              +item.email,
                                                           style: TextStyle(fontSize:fontsize*adjustsizeh*0.7, color: Colors.black54)),
-                                                          (itemkun.email.length != 0) ?IconButton(icon: Icon(Icons.copy,size: iconsize*adjustsizeh*0.7), onPressed:(){
-                                                            if(itemkun.email.length != 0){
+                                                          (item.email.length != 0) ?IconButton(icon: Icon(Icons.copy,size: iconsize*adjustsizeh*0.7), onPressed:(){
+                                                            if(item.email.length != 0){
                                                               ClipboardManager.copyToClipBoard(
-                                                                  itemkun.email);}
+                                                                  item.email);}
                                                           })
                                                               :Container(),
                                                         ])):Container(),
@@ -971,19 +995,19 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                                                     color: Colors.black54)),
                                                           ),
                                                           Container(
-                                                            child:Text(itemkun.pass,
+                                                            child:Text(item.pass,
                                                               style: TextStyle(
-                                                                  fontSize: 16*adjustsizeh*0.7,
+                                                                  fontSize: fontsize*adjustsizeh*0.7,
                                                                   fontWeight: FontWeight.bold,
                                                                   color: (conseal==false)?Colors.black54:Colors.blue),
                                                             ),
                                                           ),
-                                                          (itemkun.pass.length != 0) ?IconButton(
+                                                          (item.pass.length != 0) ?IconButton(
                                                             icon: Icon(Icons.copy,size: iconsize*adjustsizeh*0.7),
                                                             onPressed: (){
-                                                            if(itemkun.pass.legth != 0){
+                                                            if(item.pass.legth != 0){
                                                               ClipboardManager.copyToClipBoard(
-                                                                  itemkun.pass);}
+                                                                  item.pass);}
                                                           },)
                                                               :Container(),
                                                         ],
@@ -994,20 +1018,20 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                                         width: width*0.65*0.7,
                                                         child:Row(children: <Widget>[
                                                           Flexible(
-                                                          child:Text(' '+itemkun.url,
+                                                          child:Text(' '+item.url,
                                                             style: TextStyle(
-                                                              fontSize: 16*adjustsizeh*0.7,
+                                                              fontSize: fontsize*adjustsizeh*0.7,
                                                               color: Colors.brown[800],
                                                             ),
                                                             overflow: TextOverflow.ellipsis,
                                                             maxLines: 1,
                                                           ),
                                                         ),
-                                                          (itemkun.url.length != 0)?IconButton(icon: Icon(Icons.copy, size: iconsize*adjustsizeh*0.7),
+                                                          (item.url.length != 0)?IconButton(icon: Icon(Icons.copy, size: iconsize*adjustsizeh*0.7),
                                                             onPressed: (){
-                                                            if(itemkun.pass.legth != 0){
+                                                            if(item.pass.legth != 0){
                                                               ClipboardManager.copyToClipBoard(
-                                                                  itemkun.url);}
+                                                                  item.url);}
                                                           },)
                                                               :Container()
                                                         ])):Container(),
@@ -1017,9 +1041,9 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                                         alignment: Alignment.topLeft,
                                                         child: Row(children: <Widget>
                                                         [Flexible(
-                                                          child:Text(' '+itemkun.memo,
+                                                          child:Text(' '+item.memo,
                                                             style: TextStyle(
-                                                              fontSize: 16*adjustsizeh*0.7,
+                                                              fontSize: fontsize*adjustsizeh*0.7,
                                                               color: Colors.brown[800],
                                                             ),
                                                             overflow: TextOverflow.ellipsis,
@@ -1038,7 +1062,7 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                                 GestureDetector(
                                                     onTap: () {
                                                     },
-                                                    child:(itemkun.favorite==true)?Icon(Icons.favorite,color: Colors.brown[700], size: 30*0.7)
+                                                    child:(item.favorite==true)?Icon(Icons.favorite,color: Colors.brown[700], size: 30*0.7)
                                                         :Icon(Icons.favorite_border,color: Colors.brown[700], size: 30*0.7,)
                                                 ),
                                                 SizedBox(width: width*0.025*0.7),
@@ -1072,9 +1096,9 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                                           alignment: Alignment.topLeft,
                                                           child: Row(children: <Widget>
                                                           [Flexible(
-                                                              child:Text(itemkun.memo,
+                                                              child:Text(item.memo,
                                                                 style: TextStyle(
-                                                                  fontSize: 16*adjustsizeh*0.7,
+                                                                  fontSize: fontsize*adjustsizeh*0.7,
                                                                   color: Colors.brown[800],
                                                                 ),
                                                                 overflow: TextOverflow.ellipsis,
@@ -1093,7 +1117,7 @@ class _RootState extends State<Root>  with WidgetsBindingObserver  {
                                                   GestureDetector(
                                                       onTap: () {
                                                       },
-                                                      child:(itemkun.favorite==true)?Icon(Icons.favorite,color: Colors.brown[700], size: 30*0.7)
+                                                      child:(item.favorite==true)?Icon(Icons.favorite,color: Colors.brown[700], size: 30*0.7)
                                                           :Icon(Icons.favorite_border,color: Colors.brown[700], size: 30*0.7,)
                                                   ),
                                                   SizedBox(width: width*0.025*0.7),

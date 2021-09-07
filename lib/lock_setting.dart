@@ -249,7 +249,8 @@ class _LockSettingState extends State<LockSetting> {
             SizedBox(height: height*0.1),
       (widget.mode==0)?Text('Set App Passcode',textAlign: TextAlign.center,style: TextStyle(fontSize: 30*adjustsizeh))
         :Text('Enter Passcode Again',textAlign: TextAlign.center,style: TextStyle(fontSize: 30*adjustsizeh)),
-      (error==false)?Container(height:height*0.1):Container(height: height*0.1,child: Text('Passcode do not match',style: TextStyle(fontSize: 16*adjustsizeh)))
+      SizedBox(height: height*0.05),
+      (error==false)?Container(height:height*0.1):Container(height: height*0.1,child: Text('Passcode do not match',style: TextStyle(fontSize: 18*adjustsizeh)))
     ]), cancelButton: Text('cancel',style: TextStyle(fontSize: 20*adjustsizeh,color: Colors.brown[800]),),
         deleteButton: Text('delete',style: TextStyle(fontSize: 20*adjustsizeh),),
         circleUIConfig: CircleUIConfig(

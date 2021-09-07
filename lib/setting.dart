@@ -211,7 +211,7 @@ class _SettingState extends State<Setting> {
                   child: ListTile(
                     title: Row(children: <Widget>[
                       Icon(Icons.enhanced_encryption,size: 30*adjustsizeh,),
-                      Text('Application Lock',style: TextStyle(fontSize: fontsize, color: fontcolor))]),
+                      Text('Application Lock',style: TextStyle(fontSize: fontsize*adjustsizeh, color: fontcolor))]),
                     trailing: CupertinoSwitch(
                       activeColor: Colors.lime.shade800,
                       value: applicationLock,
@@ -238,7 +238,7 @@ class _SettingState extends State<Setting> {
                   child:ListTile(
                     title: Row(children: <Widget>[
                       Icon(Icons.font_download),
-                      Text('Emphasize Password',style: TextStyle(fontSize: fontsize, color: fontcolor))]),
+                      Text('Emphasize Password',style: TextStyle(fontSize: fontsize*adjustsizeh, color: fontcolor))]),
                     trailing: CupertinoSwitch(
                       activeColor: Colors.lime.shade800,
                       value: emphasis,
@@ -285,7 +285,7 @@ class _SettingState extends State<Setting> {
                   )),
                   child:ListTile(
                     title: Row(children: <Widget>[
-                      Icon(Icons.star),Text('Conseal Password',style: TextStyle(fontSize: fontsize, color: fontcolor))]),
+                      Icon(Icons.star),Text('Conseal Password',style: TextStyle(fontSize: fontsize*adjustsizeh, color: fontcolor))]),
                     trailing: CupertinoSwitch(
                       activeColor: Colors.lime.shade800,
                       value: conseal,
@@ -313,7 +313,7 @@ class _SettingState extends State<Setting> {
                       Row(mainAxisAlignment:MainAxisAlignment.center,
                           children: <Widget>[
                             Icon(Icons.list),
-                            Text('Display Item',style: TextStyle(fontSize: fontsize, color: fontcolor))]),
+                            Text('Display Item',style: TextStyle(fontSize: fontsize*adjustsizeh, color: fontcolor))]),
                       Container(
                           height: height*0.06,
                           width: width*0.99,
@@ -333,7 +333,7 @@ class _SettingState extends State<Setting> {
                                           }
                                         });
                                       }),
-                                      Text('Title',style: TextStyle(fontSize: fontsize, color: fontcolor)),
+                                      Text('Title',style: TextStyle(fontSize: fontsize*adjustsizeh, color: fontcolor)),
                                     ])),
                                 Container(child:Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -348,7 +348,7 @@ class _SettingState extends State<Setting> {
                                           }
                                         });
                                       },),
-                                      Text('ID,Email,UserName...',style: TextStyle(fontSize: fontsize, color: fontcolor)),
+                                      Text('ID,Email,UserName...',style: TextStyle(fontSize: fontsize*adjustsizeh, color: fontcolor)),
                                     ]))])),
                       Container(
                           height: height*0.06,
@@ -367,7 +367,7 @@ class _SettingState extends State<Setting> {
                                     }
                                   });
                                 }),
-                                Text('Password',style: TextStyle(fontSize: fontsize, color: fontcolor))
+                                Text('Password',style: TextStyle(fontSize: fontsize*adjustsizeh, color: fontcolor))
                               ])),
                               Container(child:Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -382,7 +382,7 @@ class _SettingState extends State<Setting> {
                                        }
                                       });
                                     }),
-                                    Text('URL',style: TextStyle(fontSize: fontsize, color: fontcolor))])),
+                                    Text('URL',style: TextStyle(fontSize: fontsize*adjustsizeh, color: fontcolor))])),
                               Container(child:Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
@@ -396,7 +396,7 @@ class _SettingState extends State<Setting> {
                                         }
                                       });
                                     },),
-                                    Text('Memo',style: TextStyle(fontSize: fontsize, color: fontcolor)),
+                                    Text('Memo',style: TextStyle(fontSize: fontsize*adjustsizeh, color: fontcolor)),
                                   ])),
                             ]))
                     ])),
@@ -405,12 +405,12 @@ class _SettingState extends State<Setting> {
                 (button==true)?Container(
                   height: height*0.1,
                   child:Column(children: <Widget>[
-                  Text("※If you can't think of a new password, it'll help you" ,style: TextStyle(fontSize: 17,color: Colors.black54)),
+                  Text("※If you can't think of a new password, it'll help you" ,style: TextStyle(fontSize: 17*adjustsizeh,color: Colors.black54)),
                   SizedBox(height: height*0.005,),
                   Container(
                       height:height*0.07,
                       child: ElevatedButton(
-                          child: Text('Create new PASSWORD (semi-auto)',style: TextStyle(fontSize: fontsize, color: Colors.yellow[600])),
+                          child: Text('Create new PASSWORD (semi-auto)',style: TextStyle(fontSize: fontsize*adjustsizeh, color: Colors.yellow[600])),
                     style: ElevatedButton.styleFrom(primary: Colors.brown[800]),
                     onPressed: (){})),
                 ]))

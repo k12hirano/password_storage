@@ -1,4 +1,4 @@
-import 'package:password_storage/Itemkun.dart';
+import 'package:password_storage/item.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -37,7 +37,7 @@ class DBProvider {
      await db.execute('CREATE TABLE item(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, email TEXT, pass TEXT, url TEXT, memo TEXT,favorite INTEGER, memostyle INTEGER, date TEXT)');
   }
 
-   /*Future<List<Itemkun>> getItems() async {
+   /*Future<List<Item>> getItems() async {
     final db = await database;
     if (database1 == null){
     database1 = await initdb();}
@@ -50,7 +50,7 @@ class DBProvider {
     return maps.map((map) => fromMap(map)).toList();
   }*/
 
-  Future<List<Itemkun>> select(int id) async{
+  Future<List<Item>> select(int id) async{
     final db = await database;
     var maps = await db.query(itemtable,
     where: '$_id = ?',
@@ -59,7 +59,7 @@ class DBProvider {
     return maps.map((map)=> fromMap(map)).toList();
   }
 
-  Future<List<Itemkun>> search(String keyword) async {
+  Future<List<Item>> search(String keyword) async {
     final db = await database;
 
     var maps = (keyword != null)?await db.query(
@@ -84,7 +84,7 @@ class DBProvider {
     }
   }
 
-  Future<List<Itemkun>> searchBytitle(String keyword) async {
+  Future<List<Item>> searchBytitle(String keyword) async {
     final db = await database;
 
     var maps = (keyword != null)?await db.query(
@@ -109,7 +109,7 @@ class DBProvider {
     }
   }
 
-  Future<List<Itemkun>> searchByid(String keyword) async {
+  Future<List<Item>> searchByid(String keyword) async {
     final db = await database;
 
     var maps = (keyword != null) ?await db.query(
@@ -134,7 +134,7 @@ class DBProvider {
     }
   }
 
-  Future<List<Itemkun>> searchBypass(String keyword) async {
+  Future<List<Item>> searchBypass(String keyword) async {
     final db = await database;
 
     var maps = (keyword != null) ?await db.query(
@@ -159,7 +159,7 @@ class DBProvider {
     }
   }
 
-  Future<List<Itemkun>> searchFAV(String keyword) async {
+  Future<List<Item>> searchFAV(String keyword) async {
     final db = await database;
 
     var maps = (keyword != null) ?await db.query(
@@ -186,7 +186,7 @@ class DBProvider {
     }
   }
 
-  Future<List<Itemkun>> searchBytitleFAV(String keyword) async {
+  Future<List<Item>> searchBytitleFAV(String keyword) async {
     final db = await database;
 
     var maps = (keyword != null) ?await db.query(
@@ -213,7 +213,7 @@ class DBProvider {
     }
   }
 
-  Future<List<Itemkun>> searchByidFAV(String keyword) async {
+  Future<List<Item>> searchByidFAV(String keyword) async {
     final db = await database;
 
     var maps = (keyword != null) ?await db.query(
@@ -240,7 +240,7 @@ class DBProvider {
     }
   }
 
-  Future<List<Itemkun>> searchBypassFAV(String keyword) async {
+  Future<List<Item>> searchBypassFAV(String keyword) async {
     final db = await database;
 
     var maps = (keyword != null)?await db.query(
@@ -267,12 +267,12 @@ class DBProvider {
     }
   }
 
-  Future insert(Itemkun item) async {
+  Future insert(Item item) async {
     final db = await database;
     await db.insert(itemtable, item.toMap());
   }
 
-  Future update(Itemkun item, int id) async {
+  Future update(Item item, int id) async {
     final db = await database;
     return await db.update(
       itemtable,
@@ -291,7 +291,7 @@ class DBProvider {
     );
   }
 
-  Map<String, dynamic> toMap(Itemkun item) {
+  Map<String, dynamic> toMap(Item item) {
     return {
       _id: item.id,
       _title: item.title,
@@ -305,8 +305,8 @@ class DBProvider {
     };
   }
 
-  Itemkun fromMap(Map<String, dynamic> json) {
-    return Itemkun(
+  Item fromMap(Map<String, dynamic> json) {
+    return Item(
       id: json[_id],
       title: json[_title],
       email: json[_email],
