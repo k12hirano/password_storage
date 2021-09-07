@@ -1,51 +1,34 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:passcode_screen/circle.dart';
 import 'package:passcode_screen/keyboard.dart';
 import 'package:passcode_screen/passcode_screen.dart';
-import 'package:password_storage/Itemkun_repository.dart';
-import 'package:password_storage/db.dart';
 import 'package:password_storage/root.dart';
-import 'package:password_storage/settingkun.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class Lock extends StatefulWidget {
-
 
   @override
   _LockState createState() => _LockState();
 }
 
-class _LockState extends State<Lock>
-//    with WidgetsBindingObserver
-{
+class _LockState extends State<Lock> /* with WidgetsBindingObserver*/ {
 
-  StreamController<bool> get _verificationNotifier => StreamController<bool>.broadcast();
-  bool isAuthenticated = false;
-  bool authentication = false;
   String passcode = '';
   String answer = '';
   String question = '';
-  LocalAuthentication auth = LocalAuthentication();
-  var passtext = TextEditingController();
-  bool _canCheckBiometrics;
-  List<BiometricType> _availableBiometrics;
-  String _authorized = 'Not Authorized';
-  bool _isAuthenticating = false;
   bool questionOr;
+  bool isAuthenticated = false;
+  bool authentication = false;
+  StreamController<bool> get _verificationNotifier => StreamController<bool>.broadcast();
+  var passtext = TextEditingController();
+
 
   _LockState(){
-   // WidgetsBinding.instance.addObserver(this);
     getQuestionpass();
     getPass();
-    //getAuth();
-    _authenticate();
-    print('hop');
-    print('questionor'+questionOr.toString());
+    // WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -63,26 +46,18 @@ class _LockState extends State<Lock>
     answer = prefs.getString('answer');}
   }
 
-  getAuth() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-      setState(() {
-        authentication =  prefs.getBool('auth');
-      });
-  }
-
    getQuestionpass() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var or = prefs.getBool('questionpass');
     if(or==null){
       prefs.setBool('questionpass', false);
       setState(() {
-        questionOr = false;print('北');
+        questionOr = false;
       });
     }else {
       setState(() {
-        questionOr = prefs.getBool('questionpass');print('南');
+        questionOr = prefs.getBool('questionpass');
       });
-
     }
   }
 
@@ -91,42 +66,11 @@ class _LockState extends State<Lock>
     prefs.setBool('appoff',false);
   }
 
-  Future<List<BiometricType>> _getAvailableBiometrics() async {
-    List<BiometricType> availableBiometrics;
-    try {
-      availableBiometrics = await auth.getAvailableBiometrics();
-    } on PlatformException catch (e) {
-      availableBiometrics = <BiometricType>[];
-      print(e);
-    }
-    return availableBiometrics;
-  }
-
-  Future<bool> _authenticate() async {
-    bool authenticated = false;
-    List<BiometricType> availableBiometricTypes = await _getAvailableBiometrics();
-    try {
-      if (availableBiometricTypes.contains(BiometricType.face)
-          || availableBiometricTypes.contains(BiometricType.fingerprint)) {
-        authenticated = await auth.authenticateWithBiometrics(localizedReason: 'Please Approuve');
-    } }on PlatformException catch (e) {
-      print(e);
-
-    }
-    if(authenticated){
-      Navigator.pop(context);
-    }
-  }
-
     _onPasscodeEntered(String enteredPasscode) async {
       bool isValid = passcode == enteredPasscode;
       _verificationNotifier.add(isValid);
       if (isValid) {
-        setState(() {
-          this.isAuthenticated = isValid;
-        });
         appOn();
-        //Navigator.pop(context);
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Root()));
       } else {
         setState(() {
@@ -139,7 +83,7 @@ class _LockState extends State<Lock>
     var dialog = await showDialog(context: context, builder: (BuildContext context){
       final height = MediaQuery.of(context).size.height;
       final width = MediaQuery.of(context).size.width;
-      final adjustsizeh = MediaQuery.of(context).size.height * 0.0011;
+      final adjustsizeh = MediaQuery.of(context).size.height*0.0011;
       return AlertDialog(
           backgroundColor: Colors.amber[200],
           content: Container(
@@ -150,7 +94,7 @@ class _LockState extends State<Lock>
                   height: height*0.04,
                   width: width*0.5,
                   alignment: Alignment.center,
-                  child: Text('Wrong Password!',style: TextStyle(fontSize: 24*adjustsizeh,),),),
+                  child: Text('Wrong Password!',style: TextStyle(fontSize: 24*adjustsizeh))),
                 SizedBox(height: height*0.05,),
                 Container(
                   height: height*0.07,
@@ -161,7 +105,7 @@ class _LockState extends State<Lock>
                           primary: Colors.brown[700]
                       ),
                       child: Text('OK',style: TextStyle(fontSize: 20*adjustsizeh,color: Colors.amber[200]),)),)
-              ],))
+              ]))
       );
     });
   }
@@ -182,11 +126,12 @@ class _LockState extends State<Lock>
     Widget  build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    final adjustsizeh = MediaQuery.of(context).size.height * 0.0011;
+    final adjustsizeh = MediaQuery.of(context).size.height*0.0011;
     return Scaffold(
         backgroundColor: Colors.amber[200],
         body:WillPopScope(child: (questionOr==false)?PasscodeScreen(
-        title: Text('Enter Passcode',textAlign: TextAlign.center,style: TextStyle(fontSize: 30*adjustsizeh),),
+        title: Text('Enter Passcode',textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 30*adjustsizeh)),
         cancelButton: Text('cancel'), deleteButton: Text('delete'),
         circleUIConfig: CircleUIConfig(
             borderColor: Colors.brown[800],
@@ -197,7 +142,6 @@ class _LockState extends State<Lock>
             deleteButtonTextStyle: TextStyle(fontSize: 15), primaryColor: Colors.brown[800]),
         passwordEnteredCallback: _onPasscodeEntered,
         //cancelCallback: _onPasscodeCancelled,
-        //digits: digits,
         passwordDigits: 4, shouldTriggerVerification: _verificationNotifier.stream)
         :Center(child: SingleChildScrollView(child:Container(child:Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -207,9 +151,6 @@ class _LockState extends State<Lock>
           Container(height: height*0.15,width: width*0.7,child: TextFormField( decoration: InputDecoration(
               labelText: 'answer'),
               controller: passtext,
-              //initialValue: vm.isNew ? '' : vm.memo.title,
-              //validator: (value) => (value.isEmpty) ? 'タイトルを入力して下さい' : null,
-              // onChanged: (value) => vm.setTitle(value),
               style: TextStyle(
                   fontSize: 20*adjustsizeh,
                   height: 2*adjustsizeh,
@@ -219,9 +160,6 @@ class _LockState extends State<Lock>
           Container(height: height*0.08,width: width*0.6,child: ElevatedButton(
             onPressed: (){
               if(passtext.text==answer){
-                setState(() {
-                  this.isAuthenticated = true;
-                });
                 appOn();
                 Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>Root()));
               }else {
@@ -231,7 +169,7 @@ class _LockState extends State<Lock>
             style: ElevatedButton.styleFrom(
                 primary: Colors.brown[700]
             ),
-            child: Text('OK',style: TextStyle(fontSize: 25*adjustsizeh,color: Colors.amber[200]),),),)
-    ],)),)), onWillPop:() async => false));
+            child: Text('OK',style: TextStyle(fontSize: 25*adjustsizeh,color: Colors.amber[200]))))
+    ])))), onWillPop:() async => false));
   }
 }

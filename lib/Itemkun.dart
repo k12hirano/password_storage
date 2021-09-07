@@ -12,19 +12,6 @@ class Itemkun {
   int memostyle;
   String date;
 
-
-
-  //String getCreatedAt() {
-  // try {
-  // 曜日を表示したいときは「'yyyy/MM/dd（E） HH:mm:ss'」
-  //  var timestamp = DateFormat('yyyy/MM/dd HH:mm:ss', 'ja_JP');
-  // return timestamp.format(date);
-  // } catch (e) {
-  // print(e);
-  // return '';
-  // }
-  //}
-
   Itemkun({
     this.id,
     this.title,

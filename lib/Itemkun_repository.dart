@@ -1,3 +1,4 @@
+/*
 import 'package:password_storage/Itemkun.dart';
 import 'package:password_storage/db.dart';
 
@@ -47,5 +48,5 @@ class ItemkunRepository{
       //print('repository');
       itemdatabase.tukkomu(item);
   Future update(Itemkun item, int id) => itemdatabase.update(item, id);
-  Future delete(int id) => itemdatabase.delete(id);
-}
+  Future delete(int id) => itemdatabase.delete(id);*/
+//}
